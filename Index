@@ -1,0 +1,1949 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>GReaT Rewards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* GReaT Rewards — "hallmark ledger": flat stone paper, ink rules, jeweller's price-tags and hallmark punch strips.
+   Layout: sticky ink top bar, parallax masthead per page, asymmetric main column + side rail. */
+:root{
+  --paper:#e7eae4; --paper-2:#dce1d9; --card:#f6f7f3; --ink:#11211b; --ink-2:#34433c; --muted:#5f6d66;
+  --hair:#c3cbc2; --rule:#11211b;
+  --em:#0d5a44; --em-2:#0a4636; --em-soft:#d3e4dc; --brass:#9b7217; --brass-hi:#d9b14e; --brass-soft:#efe3c3;
+  --lac:#b0362a; --lac-soft:#f2d9d4; --ok:#1d6b45; --ok-soft:#d6eadf; --warn:#8a6100; --warn-soft:#f1e4c2;
+  --on-em:#ffffff; --stage:#0b3a2d; --stage-ink:#e9efe9;
+  --f-disp:"Big Shoulders Display","Archivo Narrow","Arial Narrow",Impact,sans-serif;
+  --f-body:"Archivo","Noto Sans Tamil","Noto Sans Telugu","Noto Sans Kannada","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --hard:3px 3px 0 var(--ink);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0d1411; --paper-2:#131c18; --card:#16211c; --ink:#e4ebe6; --ink-2:#c3cec7; --muted:#93a39b; --hair:#2b3833; --rule:#e4ebe6;
+  --em:#4fbf93; --em-2:#3da67e; --em-soft:#17342a; --brass:#d9b14e; --brass-hi:#e9c76a; --brass-soft:#352a12;
+  --lac:#ef7360; --lac-soft:#3b1d18; --ok:#57c48a; --ok-soft:#173226; --warn:#e2b94f; --warn-soft:#352a12;
+  --on-em:#04170f; --stage:#07231b; --stage-ink:#e9efe9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0d1411; --paper-2:#131c18; --card:#16211c; --ink:#e4ebe6; --ink-2:#c3cec7; --muted:#93a39b; --hair:#2b3833; --rule:#e4ebe6;
+  --em:#4fbf93; --em-2:#3da67e; --em-soft:#17342a; --brass:#d9b14e; --brass-hi:#e9c76a; --brass-soft:#352a12;
+  --lac:#ef7360; --lac-soft:#3b1d18; --ok:#57c48a; --ok-soft:#173226; --warn:#e2b94f; --warn-soft:#352a12;
+  --on-em:#04170f; --stage:#07231b; --stage-ink:#e9efe9; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--f-disp);font-weight:800;line-height:1;margin:0;letter-spacing:.005em;text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+a{color:var(--em)}
+.num,td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-mono)}
+.sub{color:var(--muted);font-size:14px}
+.dept{color:var(--muted);font-size:13px}
+.hint{font-size:13px;color:var(--muted);margin:2px 0 12px}
+.err{color:var(--lac);font-size:14px;min-height:20px;margin:4px 0 8px;font-weight:600}
+.grow{flex:1}
+
+/* Buttons: square, ink outline; primary carries the only hard shadow */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);padding:9px 15px;border-radius:2px;cursor:pointer;font-weight:600;font-size:14px;line-height:1.2;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--paper-2)}
+.btn.primary{background:var(--em);border-color:var(--ink);color:var(--on-em);box-shadow:var(--hard)}
+.btn.primary:hover{background:var(--em-2)}
+.btn.primary:active,.btn.gold:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.gold,.btn.glow{background:var(--brass-hi);color:#1b1404;border-color:var(--ink);box-shadow:var(--hard)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{border-color:var(--hair)}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn.danger{color:var(--lac);border-color:var(--lac)}
+.btn.link{border:0;background:none;color:var(--em);padding:2px 0;text-decoration:underline;text-underline-offset:3px;box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.xbtn{border:0;background:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:2px 8px}
+.xbtn:hover{color:var(--lac)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Forms */
+input,select,textarea{background:var(--card);border:1.5px solid var(--hair);border-radius:2px;padding:9px 11px;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
+select.inline,input.inline{width:auto}
+textarea{min-height:84px;resize:vertical}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field label,.lbl{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.banner{border:1.5px solid var(--ink);background:var(--brass-soft);padding:10px 14px;margin:0 0 16px;font-size:14px}
+.banner.info{background:var(--em-soft)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:16px}
+
+/* ---------- Top bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--ink);color:var(--paper)}
+.bar-in{max-width:1240px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:22px;min-height:58px}
+.wm{font-family:var(--f-disp);font-weight:900;font-size:24px;letter-spacing:.02em;text-transform:uppercase;line-height:1;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.wm i{font-style:normal;color:var(--brass-hi)}
+.wm .hmk{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.06em;border:1px solid currentColor;padding:2px 4px;opacity:.75}
+.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;align-self:stretch}
+.nav::-webkit-scrollbar{display:none}
+.nav button{border:0;background:none;color:inherit;opacity:.72;padding:0 12px;cursor:pointer;font-weight:600;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent;border-top:3px solid transparent}
+.nav button:hover{opacity:1}
+.nav button[aria-selected="true"]{opacity:1;border-bottom-color:var(--brass-hi)}
+.tabcount{display:inline-block;margin-left:6px;font-family:var(--f-mono);font-size:11px;background:var(--lac);color:#fff;padding:1px 6px;vertical-align:1px}
+.bar-r{display:flex;align-items:center;gap:8px}
+.bar-r .btn{color:var(--paper);border-color:transparent;background:transparent;padding:6px 8px;font-size:13px}
+.bar-r .btn:hover{border-color:rgba(255,255,255,.35)}
+:root[data-theme="dark"] .bar-r .btn:hover{border-color:var(--hair)}
+.langsel select{background:transparent;border:1px solid rgba(255,255,255,.3);color:inherit;padding:5px 8px;font-size:13px;width:auto;border-radius:2px}
+.langsel select option{color:#11211b}
+.langsel span{display:none}
+.bar .langsel select{border-color:color-mix(in srgb,var(--paper) 30%,transparent)}
+
+/* ---------- Parallax masthead ---------- */
+.mast{position:relative;overflow:hidden;border-bottom:1.5px solid var(--rule);background:var(--paper-2);isolation:isolate}
+.mast .layer{position:absolute;inset:0;pointer-events:none;will-change:transform}
+.mast .words{display:flex;flex-direction:column;justify-content:center;gap:0;padding-left:2vw;opacity:.9}
+.mast .words span{font-family:var(--f-disp);font-weight:900;font-size:clamp(70px,13vw,180px);line-height:.86;white-space:nowrap;color:transparent;-webkit-text-stroke:1.2px color-mix(in srgb,var(--ink) 22%,transparent);text-transform:uppercase}
+.mast .words span:nth-child(2){padding-left:12vw}
+.mast .words span:nth-child(3){padding-left:4vw}
+.mast-in{position:relative;max-width:1240px;margin:0 auto;padding:34px 20px 26px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;will-change:transform}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.mast h1{font-size:clamp(46px,8vw,104px);font-weight:900;text-transform:uppercase;line-height:.88;margin:8px 0 18px;letter-spacing:-.005em}
+.mast h1 .amp{color:var(--em)}
+.mast-act{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.stampbox{position:absolute;color:var(--brass)}
+.stampbox svg{display:block;width:100%;height:auto}
+.stamp-thud{position:fixed;left:50%;top:42%;width:min(280px,64vw);z-index:90;pointer-events:none;color:var(--lac);transform:translate(-50%,-50%) rotate(-12deg) scale(2.2);opacity:0;animation:thud 1.6s cubic-bezier(.2,1.2,.3,1) forwards}
+@keyframes thud{0%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}18%{opacity:.95;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}70%{opacity:.95}100%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
+
+/* Hallmark strip: the stats row, modelled on a jeweller's punch strip */
+.hm{display:inline-grid;grid-auto-flow:column;grid-auto-columns:minmax(110px,auto);border:1.5px solid var(--rule);background:var(--card);max-width:100%;overflow-x:auto}
+.hm-c{padding:10px 16px 9px;border-left:1.5px solid var(--rule);display:flex;flex-direction:column;gap:3px;min-width:0}
+.hm-c:first-child{border-left:0}
+.hm-c b{font-family:var(--f-mono);font-size:22px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hm-c small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.hm-c.id{background:var(--ink);color:var(--paper)}
+.hm-c.id small{color:color-mix(in srgb,var(--paper) 70%,transparent)}
+.hm-c.id b{font-size:16px}
+.hm-c.hot b{color:var(--em)}
+
+/* ---------- Page ---------- */
+.page{max-width:1240px;margin:0 auto;padding:28px 20px 80px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;align-items:start}
+.rail{display:grid;gap:20px;position:sticky;top:calc(78px + env(safe-area-inset-top,0px))}
+.panel{background:var(--card);border:1.5px solid var(--rule);padding:18px 20px 20px;margin-bottom:20px;min-width:0}
+.rail .panel{margin:0}
+.panel > h2,.sec-h h2{font-size:26px;text-transform:uppercase;margin:0 0 4px}
+.panel h3{font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px;color:var(--ink-2)}
+.panel p{max-width:70ch;margin:6px 0}
+.sec-h,.feedbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;margin:0 0 14px;padding-bottom:10px;border-bottom:1.5px solid var(--rule)}
+.feedbar h2{font-size:30px;text-transform:uppercase}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:20px}
+.two-col > .panel{margin-bottom:0}
+.two-col + .panel,.two-col + section{margin-top:20px}
+
+/* Segmented filters */
+.chipset{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--rule)}
+.chipset button{border:0;border-left:1.5px solid var(--rule);background:var(--card);padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.chipset button:first-child{border-left:0}
+.chipset button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--rule)}
+.seg button{border:0;border-left:1.5px solid var(--rule);background:var(--card);padding:10px 6px;font-weight:700;cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button.sel{background:var(--ink);color:var(--paper)}
+
+/* ---------- Wall: recognition price-tags ---------- */
+.ticket{display:grid;grid-template-columns:104px minmax(0,1fr);background:var(--card);border:1.5px solid var(--rule);min-width:0}
+.ticket + .ticket{margin-top:14px}
+.ticket.pending{border-style:dashed}
+.stub{position:relative;background:var(--vc);color:#fff;padding:30px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border-right:1.5px solid var(--rule)}
+.stub::before{content:"";position:absolute;top:10px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--paper);border:1.5px solid var(--rule)}
+.stub .code{font-family:var(--f-disp);font-weight:900;font-size:40px;line-height:.9;letter-spacing:.02em}
+.stub .vname{font-size:11.5px;font-weight:600;line-height:1.25;opacity:.95}
+.stub .spts{margin-top:auto;font-family:var(--f-mono);font-size:12px;font-weight:600;background:rgba(0,0,0,.25);padding:2px 6px}
+.tbody{padding:14px 18px 12px;min-width:0}
+.thead{font-size:15.5px;line-height:1.4}
+.thead b{font-weight:700}
+.tmeta{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:3px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.tmeta .k{color:var(--ink-2)}
+.rmsg{margin:10px 0 0;font-size:17px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;max-width:62ch}
+.boosts{font-family:var(--f-mono);font-size:12px;margin-top:8px;color:var(--brass)}
+.racts{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:12px;align-items:center;border-top:1px dashed var(--hair);padding-top:10px}
+.rx{border:1px solid var(--hair);background:transparent;padding:3px 8px;font-size:14px;cursor:pointer;display:inline-flex;gap:4px;align-items:center;border-radius:2px}
+.rx.on{border-color:var(--ink);background:var(--brass-soft)}
+.rx small{font-family:var(--f-mono);font-weight:600;font-size:12px}
+.rlink{border:0;background:none;color:var(--ink-2);font-size:13px;font-weight:600;cursor:pointer;padding:4px 6px;text-decoration:none}
+.rlink:hover{color:var(--em);text-decoration:underline}
+.racts .sp{flex:1}
+.avs{display:flex}
+.av{width:44px;height:44px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-weight:700;font-size:15px;border:2px solid var(--card);flex:none}
+.av.sm{width:32px;height:32px;font-size:12px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;font-size:12px;font-weight:700;color:#fff}
+.ptsp{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--brass);border:1px solid currentColor;padding:1px 6px}
+.kindp{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.st-pill{display:inline-block;font-family:var(--f-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border:1px solid currentColor}
+.st-pending{color:var(--warn);background:var(--warn-soft)}
+.st-approved,.st-fulfilled{color:var(--ok);background:var(--ok-soft)}
+.st-rejected{color:var(--lac);background:var(--lac-soft)}
+.more{text-align:center;margin-top:18px}
+
+/* Rail lists */
+.dates{list-style:none;margin:6px 0 0;padding:0}
+.dates li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--hair)}
+.dates li:first-child{border-top:0}
+.dbox{border:1.5px solid var(--rule);text-align:center;line-height:1;padding:5px 0 4px}
+.dbox b{display:block;font-family:var(--f-disp);font-weight:900;font-size:24px}
+.dbox small{font-family:var(--f-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.dbox.bd{background:var(--brass-soft)}
+.dbox.an{background:var(--em-soft)}
+.dates .nm{font-weight:700;font-size:14px;overflow-wrap:anywhere}
+.dates .ds{font-size:12px;color:var(--muted)}
+.mini{list-style:none;margin:6px 0 0;padding:0;counter-reset:r}
+.mini li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--hair);font-size:14px}
+.mini li:first-child{border-top:0}
+.rk{font-family:var(--f-mono);font-weight:600;color:var(--muted);margin-right:6px}
+.mini b{font-family:var(--f-mono)}
+.mini-kpi{display:flex;gap:6px 18px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px}
+.mini-kpi b{color:var(--ink);font-family:var(--f-mono)}
+
+/* Celebrations (team / admin) */
+.celebs{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 8px}
+.celeb{flex:0 0 auto;width:200px;border:1.5px solid var(--rule);background:var(--card);padding:12px;display:grid;gap:6px}
+
+/* Wallet + catalogue */
+.wallet{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));border:1.5px solid var(--rule);margin-bottom:20px;background:var(--card)}
+.wbox{padding:16px 18px;border-left:1.5px solid var(--rule)}
+.wbox:first-child{border-left:0}
+.wbox b{display:block;font-family:var(--f-mono);font-size:30px;font-weight:600;line-height:1.15;font-variant-numeric:tabular-nums}
+.wbox span{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.wbox.main{background:var(--em);color:var(--on-em)}
+.wbox.main span{color:inherit;opacity:.8}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(210px,100%),1fr));gap:0;border-top:1.5px solid var(--rule);border-left:1.5px solid var(--rule)}
+.item{border-right:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule);padding:16px;display:grid;gap:8px;align-content:start;background:var(--card)}
+.item .ie{font-size:34px;line-height:1}
+.item .ic{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.item b{font-size:15px;line-height:1.3}
+.item .ip{font-family:var(--f-mono);font-size:19px;font-weight:600}
+.item .need{font-size:12px;color:var(--muted)}
+.prog{height:6px;background:var(--paper-2);border:1px solid var(--hair)}
+.prog i{display:block;height:100%;background:var(--brass)}
+
+/* Badges: hexagonal hallmark marks */
+.bcoll{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+.bt{text-align:center;padding:4px 2px}
+.bt .hex{width:76px;height:84px;margin:0 auto 6px;display:grid;place-items:center;background:var(--vc);color:#fff;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);font-family:var(--f-disp);font-weight:900;font-size:28px}
+.bt b{display:block;font-size:13px;line-height:1.25}
+.bt .bn{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--muted)}
+.bt.zero .hex{background:var(--paper-2);color:var(--muted);outline:1px dashed var(--hair)}
+.bt.zero b{color:var(--muted)}
+
+/* Team */
+.meterbar{height:12px;border:1.5px solid var(--rule);background:var(--paper-2);margin:12px 0 6px}
+.meterbar i{display:block;height:100%;background:var(--em)}
+.rankbig{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:10px 0 4px}
+.rankbig .n{font-family:var(--f-disp);font-weight:900;font-size:72px;line-height:.9;color:var(--em)}
+.nudge{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--hair)}
+.nudge:first-of-type{border-top:0}
+.nudge .who{display:flex;gap:10px;align-items:center;min-width:0}
+.nudge .who div{min-width:0}
+.nudge small{display:block;color:var(--muted);font-size:12px}
+.gap{font-family:var(--f-mono);font-size:12px;color:var(--lac);font-weight:600}
+
+/* Leaderboard */
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1.5px solid var(--rule);margin:8px 0 14px;align-items:stretch}
+.pod{padding:14px 12px;text-align:left;border-left:1.5px solid var(--rule);background:var(--card)}
+.pod:first-child{border-left:0}
+.pod .md{font-family:var(--f-disp);font-weight:900;font-size:46px;line-height:.9;color:var(--muted)}
+.pod.p1{background:var(--brass-soft)}
+.pod.p1 .md{color:var(--brass)}
+.pod b{display:block;margin-top:6px;font-size:15px;overflow-wrap:break-word}
+.pod span{display:block;font-size:12px;color:var(--muted)}
+.pod .v{font-family:var(--f-mono);font-size:22px;font-weight:600;margin-top:6px}
+.cov{display:grid;grid-template-columns:minmax(80px,170px) minmax(0,1fr) 56px;gap:10px;align-items:center;font-size:14px}
+.cov + .cov{margin-top:6px}
+.cov .tr{height:12px;background:var(--paper-2);border:1px solid var(--hair);overflow:hidden}
+.cov .tr i{display:block;height:100%}
+.cov b{text-align:right;font-family:var(--f-mono);font-weight:600;font-size:13px}
+.cov .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eqgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:18px}
+
+/* KPI = hallmark cells */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));border:1.5px solid var(--rule);background:var(--card);margin-bottom:20px}
+.kpi{padding:14px 16px;border-left:1.5px solid var(--rule);margin-left:-1.5px}
+.kpi b{display:block;font-family:var(--f-mono);font-size:28px;font-weight:600;line-height:1.1}
+.kpi > span{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.kpi .sub{font-size:12px;margin-top:2px}
+.down{color:var(--lac)}.up{color:var(--ok)}
+.vbars svg{width:100%;height:auto;display:block}
+.vbars text{font-family:var(--f-mono);fill:var(--muted);font-size:12px}
+.vbars text.v{fill:var(--ink);font-weight:600}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--hair);white-space:nowrap}
+th{font-family:var(--f-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border-bottom:1.5px solid var(--rule);position:sticky;top:0;background:var(--card)}
+td.heat{text-align:center;font-family:var(--f-mono);font-weight:600}
+.edit-tbl input,.edit-tbl select{padding:6px 8px}
+.edit-tbl td{white-space:normal;vertical-align:middle}
+.edit-tbl input.e{width:56px;text-align:center}
+.edit-tbl input.n{min-width:200px}
+.edit-tbl input.p{width:100px}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:11px;padding:1px 6px;border:1px solid var(--em);color:var(--em);text-transform:uppercase}
+.ladder{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));border-top:1.5px solid var(--rule);border-left:1.5px solid var(--rule)}
+.ladder li{padding:10px 12px;border-right:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule);display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:13px}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 18px;margin-top:12px}
+.empty-s{padding:28px 10px;text-align:center;color:var(--muted)}
+.empty-s .ee{display:block;font-family:var(--f-disp);font-weight:900;font-size:40px;color:var(--hair);line-height:1;margin-bottom:6px}
+.empty-s b{color:var(--ink)}
+
+/* Upload */
+.drop{display:block;border:1.5px dashed var(--ink);padding:26px;text-align:center;background:var(--paper);cursor:pointer;margin-top:12px}
+.drop.over{background:var(--em-soft)}
+.drop b{display:block;font-size:16px}
+.colmap{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.colmap span{font-family:var(--f-mono);font-size:11px;border:1px solid var(--hair);padding:2px 7px}
+.colmap span.ok{border-color:var(--ok);color:var(--ok)}
+
+/* Dialogs */
+dialog{border:1.5px solid var(--rule);border-radius:0;padding:0;background:var(--card);color:var(--ink);width:min(600px,calc(100% - 24px));max-height:calc(100% - 40px);box-shadow:8px 8px 0 var(--ink)}
+dialog::backdrop{background:rgba(8,20,15,.55)}
+.dlg{padding:22px 22px 18px}
+.dlg h2{font-size:30px;text-transform:uppercase;margin-bottom:16px}
+.dlg-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:8px;flex-wrap:wrap}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0;border-top:1.5px solid var(--rule);border-left:1.5px solid var(--rule)}
+.vgrid button{border:0;border-right:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule);background:var(--card);padding:10px 6px;display:grid;gap:4px;justify-items:center;cursor:pointer;font-weight:600;font-size:12.5px;text-align:center}
+.vgrid button .ve{font-family:var(--f-disp);font-weight:900;font-size:24px;line-height:1;color:var(--vc)}
+.vgrid button[aria-pressed="true"]{background:var(--vc);color:#fff}
+.vgrid button[aria-pressed="true"] .ve{color:#fff}
+.sel-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.sel-chips span{display:inline-flex;align-items:center;gap:4px;background:var(--ink);color:var(--paper);padding:3px 4px 3px 10px;font-size:13px;font-weight:600}
+.sel-chips button{border:0;background:none;color:inherit;cursor:pointer;font-size:16px;line-height:1;padding:0 4px}
+.qs-res{border:1.5px solid var(--rule);background:var(--card);max-height:280px;overflow:auto;margin-top:4px}
+.qs-res button{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--hair);background:none;padding:8px 12px;cursor:pointer}
+.qs-res button:first-child{border-top:0}
+.qs-res button:hover,.qs-res button.act{background:var(--em-soft)}
+.qs-res .none{padding:10px 12px;color:var(--muted);font-size:14px}
+.ptchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ptchips button{border:1.5px solid var(--hair);background:var(--card);padding:6px 12px;font-family:var(--f-mono);font-weight:600;cursor:pointer}
+.ptchips button[aria-pressed="true"]{border-color:var(--ink);background:var(--brass-hi);color:#1b1404}
+.ptchips input{width:110px}
+.budgetline{font-size:13px;color:var(--muted);margin-top:8px}
+.budgetline b{color:var(--ink)}
+.aihelp{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.aiout{margin-top:6px;font-size:13px;color:var(--muted)}
+.cthread{list-style:none;margin:10px 0;padding:0;max-height:46vh;overflow:auto}
+.cthread li{padding:10px 0;border-top:1px solid var(--hair);font-size:14px}
+.cthread li.mine{padding-left:10px;border-left:3px solid var(--em)}
+.cthread .who{font-size:12px;color:var(--muted);margin-bottom:2px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);z-index:95;border:1.5px solid var(--brass-hi)}
+.toast.show{opacity:1}
+
+/* ---------- Sign-in gate ---------- */
+.gate{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,1fr);min-height:100vh}
+.stage{position:relative;overflow:hidden;background:var(--stage);color:var(--stage-ink);isolation:isolate;min-height:560px}
+.stage .layer{position:absolute;inset:-6%;will-change:transform;pointer-events:none}
+.stage .words{display:flex;flex-direction:column;justify-content:center;padding-left:4%}
+.stage .words span{font-family:var(--f-disp);font-weight:900;font-size:clamp(80px,12vw,190px);line-height:.85;white-space:nowrap;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.2px rgba(217,177,78,.32)}
+.stage .words span:nth-child(even){padding-left:10%}
+.stage .grid{background-image:linear-gradient(rgba(233,239,233,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(233,239,233,.06) 1px,transparent 1px);background-size:48px 48px}
+.stage .stampbox{color:var(--brass-hi)}
+.stage-in{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:34px clamp(20px,4vw,56px);gap:30px;will-change:transform}
+.stage .wm{font-size:30px;color:var(--stage-ink)}
+.stage h1{font-size:clamp(54px,7.4vw,112px);font-weight:900;text-transform:uppercase;line-height:.86;max-width:9ch}
+.stage h1 i{font-style:normal;color:var(--brass-hi)}
+.stage .lead{max-width:44ch;font-size:16px;color:rgba(233,239,233,.85);margin:16px 0 0}
+.ticker{border-top:1px solid rgba(233,239,233,.25);padding-top:12px;display:grid;gap:8px;max-width:520px}
+.ticker div{font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+.ticker .c{font-family:var(--f-mono);font-size:11px;color:var(--brass-hi);border:1px solid currentColor;padding:0 5px;flex:none}
+.gate-form{background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:36px clamp(20px,4vw,56px);gap:18px;border-left:1.5px solid var(--rule)}
+.gate-form .langrow{display:flex;justify-content:flex-end}
+.gate-form .langsel select{border-color:var(--hair);color:var(--ink)}
+.gate-form h2{font-size:40px;text-transform:uppercase}
+.card-form{background:var(--card);border:1.5px solid var(--rule);padding:20px;max-width:440px;width:100%}
+.card-form .btn.primary{width:100%;padding:12px}
+.card-form .seg{margin-bottom:18px}
+.trial{max-width:440px;width:100%;border:1.5px dashed var(--ink);padding:12px 14px;font-size:13px;background:var(--brass-soft)}
+.trial b{font-family:var(--f-mono)}
+.trial table{font-size:13px}
+.trial th,.trial td{padding:5px 6px;background:transparent}
+.trial h3{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 6px}
+
+/* Responsive */
+@media (max-width:980px){
+  .cols{grid-template-columns:1fr}
+  .rail{position:static;order:-1;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr))}
+  .gate{grid-template-columns:1fr}
+  .stage{min-height:auto}
+  .stage-in{min-height:440px}
+  .gate-form{border-left:0;border-top:1.5px solid var(--rule)}
+}
+@media (max-width:720px){
+  .bar-in{flex-wrap:wrap;gap:0 10px;padding:0 14px}
+  .wm{font-size:20px;min-height:50px}
+  .bar-r{margin-left:auto}
+  .bar-r .who-n{display:none}
+  .nav{order:3;flex:1 0 100%;min-height:42px;border-top:1px solid rgba(255,255,255,.15);margin:0 -14px;padding:0 6px}
+  .mast-in{grid-template-columns:1fr;padding:24px 16px 20px}
+  .mast-act{align-items:flex-start}
+  .page{padding:20px 16px 70px}
+  .ticket{grid-template-columns:76px minmax(0,1fr)}
+  .stub .code{font-size:30px}
+  .stub .vname{font-size:10.5px}
+  .tbody{padding:12px 14px}
+  .rmsg{font-size:15.5px}
+  .hm{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));display:grid;width:100%}
+  .hm-c{border-left:0;border-top:1.5px solid var(--rule)}
+  .hm-c:nth-child(-n+2){border-top:0}
+  .hm-c:nth-child(even){border-left:1.5px solid var(--rule)}
+  .hm-c b{font-size:18px}
+  .cov{grid-template-columns:minmax(70px,110px) minmax(0,1fr) 48px}
+  .podium .pod .md{font-size:34px}
+  .pod b{font-size:13px}
+  .dlg{padding:16px 14px}
+  .vgrid{grid-template-columns:repeat(3,1fr)}
+  .stage h1{font-size:52px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.layer,.mast-in,.stage-in{transform:none!important}}
+
+/* Landing necklace + home illustration + spotlight */
+.stage .neck{position:absolute;right:-3%;top:4%;width:min(44%,470px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.35))}
+.mast.home{background:var(--paper-2)}
+.mast-in.two{grid-template-columns:minmax(0,1fr) minmax(300px,46%);align-items:end;padding-bottom:0}
+.mast-in.two > div:first-child{padding-bottom:26px}
+.art{position:relative;height:340px;overflow:hidden;align-self:stretch;border-left:1.5px solid var(--rule)}
+.art-l{position:absolute;inset:0;will-change:transform}
+.art-l svg{position:absolute;left:0;bottom:0;width:100%;height:100%}
+.spot{display:grid;grid-template-columns:minmax(0,1fr) 220px;background:var(--ink);color:var(--paper);border:1.5px solid var(--rule);margin-bottom:24px;overflow:hidden}
+.spot-txt{padding:22px 24px;min-width:0}
+.spot .eyebrow{color:var(--brass-hi)}
+.spot .q{font-family:var(--f-disp);font-weight:800;font-size:clamp(26px,3.2vw,40px);line-height:1.02;margin:10px 0 14px;overflow-wrap:anywhere}
+.spot-by{font-size:15px}
+.spot .sub2{font-size:13px;opacity:.75}
+.spot .btn{color:var(--ink)}
+.spot .btn:not(.gold){background:var(--paper);border-color:var(--paper)}
+.spot-art{position:relative;background:var(--vc);display:grid;place-items:center;border-left:1.5px solid var(--rule);min-height:200px}
+.spot-art .neck-sm{width:86%;filter:drop-shadow(0 10px 16px rgba(0,0,0,.35))}
+.spot-art .code{position:absolute;left:12px;bottom:8px;font-family:var(--f-disp);font-weight:900;font-size:44px;color:#fff;opacity:.9;line-height:1}
+.wbox.main{position:relative;overflow:hidden}
+.wart{position:absolute;right:10px;bottom:6px;width:110px;opacity:.9}
+.wbox.main > span,.wbox.main > b{position:relative}
+@media (max-width:980px){.mast-in.two{grid-template-columns:1fr}.art{height:220px;border-left:0;border-top:1.5px solid var(--rule);margin:0 -16px}}
+@media (max-width:720px){
+  .stage .neck{width:58%;right:-10%;top:auto;bottom:4%;opacity:.55}
+  .spot{grid-template-columns:1fr}.spot-art{min-height:150px;border-left:0;border-top:1.5px solid var(--rule)}.spot-art .neck-sm{width:46%}
+  .wart{width:84px;opacity:.5}
+}
+/* fixes */
+.wm{gap:10px}
+.wmt i{font-style:normal;color:var(--brass-hi)}
+.stage h1{font-size:clamp(50px,6.2vw,96px)}
+.stage .words span{-webkit-text-stroke:1.2px rgba(217,177,78,.2)}
+.mast .words span{-webkit-text-stroke:1.1px color-mix(in srgb,var(--ink) 13%,transparent)}
+.hm{grid-auto-columns:auto}
+.hm-c small{white-space:normal;max-width:15ch;line-height:1.25}
+.gate > section,.cols > *{min-width:0}
+.trial td,.trial th{white-space:normal}
+.wmt{text-transform:none}
+@media (max-width:720px){.stage .stampbox{display:none}.stage .neck{top:3%;bottom:auto;right:-8%;width:44%;opacity:.45}}
+/* Phone: app-style bottom tab bar */
+@media (max-width:720px){
+  .nav{position:fixed;left:0;right:0;bottom:0;margin:0;z-index:60;background:var(--ink);color:var(--paper);border-top:1.5px solid var(--brass-hi);min-height:58px;padding:0 4px env(safe-area-inset-bottom,0px);order:0;flex:none;gap:0;justify-content:space-around}
+  .nav button{flex:1 0 auto;font-size:12.5px;padding:0 8px;border-bottom:0;border-top:3px solid transparent}
+  .nav button[aria-selected="true"]{border-top-color:var(--brass-hi);border-bottom-color:transparent}
+  .bar-in{min-height:52px}
+  .page{padding-bottom:110px}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .bar-r .btn{padding:6px 4px}
+  .mast h1{font-size:46px}
+  .feedbar h2{font-size:24px}
+  .btn{min-height:40px}
+  .rx{min-height:34px;min-width:40px;justify-content:center}
+}
+</style>
+<div id="app"></div>
+<dialog id="dlgRec" style="width:min(660px,calc(100% - 24px))"><div class="dlg" id="recBody"></div></dialog>
+<dialog id="dlgCm"><div class="dlg" id="cmBody"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+"use strict";
+/* =========================================================
+   GReaT Rewards: peer and manager recognition, points wallet,
+   rewards catalog, milestones and programme analytics.
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+const DAY = 864e5;
+function pad(n){ return String(n).padStart(2,"0"); }
+function ymd(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
+function today(){ return ymd(new Date()); }
+function curMonth(){ const d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth()+1); }
+function monthOf(ts){ const d = new Date(ts); return d.getFullYear() + "-" + pad(d.getMonth()+1); }
+function mLabel(m, short){ const [y,mo] = m.split("-").map(Number); return new Date(y, mo-1, 1).toLocaleDateString(undefined,{month:short?"short":"long", year:"numeric"}); }
+function fmtT(t){ return new Date(t).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}); }
+function fmtDate(d){ try { return new Date(d + "T12:00:00").toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}); } catch(e){ return d; } }
+function nf(n){ return Math.round(n || 0).toLocaleString("en-IN"); }
+function pct(a, b){ return b ? Math.round(a / b * 1000) / 10 : 0; }
+function ago(t){
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return "just now"; if (s < 3600) return Math.floor(s/60) + " min ago";
+  if (s < 86400) return Math.floor(s/3600) + " h ago"; if (s < 7*86400) return Math.floor(s/86400) + " days ago";
+  return fmtT(t);
+}
+let toastTimer;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; translateTree(t); t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 3600); }
+function sessGet(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
+function sessSet(k,v){ try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,v); } catch(e){} }
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k,v){ try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k,v); } catch(e){} }
+const COLORS = ["#0f6b4f","#8a1538","#1f4e8c","#9a6b0c","#4b3a8c","#0e7f96","#8a4b1f","#2f7d5a","#a8354f","#3f5566"];
+function hColor(s){ let h = 0; s = String(s||""); for (let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) >>> 0; return COLORS[h % COLORS.length]; }
+function initials(n){ const p = String(n||"?").trim().split(/\s+/).filter(Boolean); return ((p[0]||"?")[0] + (p.length > 1 ? p[p.length-1][0] : "")).toUpperCase(); }
+function avatar(name, sm){ return '<span class="av' + (sm ? ' sm' : '') + '" style="background:' + hColor(name) + '" aria-hidden="true">' + esc(initials(name)) + '</span>'; }
+
+const I18_KEYS = ["🏠 Wall","🎁 Rewards","🏅 My recognition","🏆 Leaderboard","👥 My team","🌟 Recognise someone","Change password","Sign out","Sign in","Employee","Manager","Admin","Employee login","Manager login","Admin login","Employee ID","Password","Redeem","Recognise","Send wishes","Cancel","Post","Close","Post recognition","Send award","💡 Suggest a message","✨ Help me write it","💬 Appreciation","⚡ Spot award","⚡ Give a spot award","Namaskaram GRTian","Sign in to appreciate your colleagues, see what you have earned and redeem your points for rewards.","🎉 Celebrations this week","Recognition wall","Everyone","My showroom","Involving me","Rewards catalogue","My redemptions","Points balance","Earned, all time","Redeemed","My badges","Received","Given","Most recognised","Top receivers","Top givers","All","Award budget","Team coverage","👀 Waiting for a thank-you","🌟 Recognise a colleague","Who are you recognising?","Pick a value","What did they do? Be specific","Add points (optional)","Points per person","No points","Comments","Add a comment","Today","Tomorrow","year with us","years with us","appreciated","gave a spot award to","completed","Happy birthday","comments","comment","Boost","Download card","recognitions this year","left to give this month","award budget left","more points needed","pts","Pending","Approved","Issued","Declined","Waiting for HR approval","This month","This quarter","This year","All showrooms","Recognition I received","Recognition I gave","received","given","points earned","Choose your password","New password","Type it again","Save password","Current password","Customer Delight","Teamwork","Extra Mile","Trust & Integrity","Excellence","Ownership","Learning & Growth","Thank You","Celebration","Appreciation","Spot award","Work anniversary","Birthday","A thank-you costs nothing and means everything.","Great work deserves to be seen.","Every happy customer starts with you.","Cheer a colleague today.","Great teams shine brighter than diamonds.","Small wins, loudly celebrated.","Recognise often. Reward fairly.","Posted to the wall. Thank you for recognising!","Request sent to HR","Never recognised","Last recognised","days ago","Recognition I received"];
+const I18_VALS = {
+ta: ["🏠 சுவர்","🎁 பரிசுகள்","🏅 என் பாராட்டுகள்","🏆 லீடர்போர்டு","👥 என் டீம்","🌟 ஒருவரை பாராட்டுங்க","பாஸ்வேர்டு மாத்துங்க","வெளியேறுங்க","லாகின் பண்ணுங்க","ஸ்டாஃப்","மேனேஜர்","அட்மின்","ஸ்டாஃப் லாகின்","மேனேஜர் லாகின்","அட்மின் லாகின்","எம்ப்ளாயி ID","பாஸ்வேர்டு","ரிடீம் பண்ணுங்க","பாராட்டுங்க","வாழ்த்து சொல்லுங்க","கேன்சல்","போஸ்ட்","மூடு","பாராட்டை போஸ்ட் பண்ணுங்க","விருது அனுப்புங்க","💡 மெசேஜ் ஐடியா","✨ எழுத உதவுங்க","💬 பாராட்டு","⚡ ஸ்பாட் விருது","⚡ ஸ்பாட் விருது கொடுங்க","நமஸ்காரம் GRTian","லாகின் பண்ணுங்க: சக ஊழியர்களை பாராட்டுங்க, நீங்க சம்பாதிச்சதை பாருங்க, பாயிண்ட்ஸை பரிசா மாத்துங்க.","🎉 இந்த வாரக் கொண்டாட்டங்கள்","பாராட்டுச் சுவர்","எல்லாரும்","என் ஷோரூம்","என்னை பற்றியது","பரிசு பட்டியல்","என் ரிடீம்கள்","பாயிண்ட்ஸ் இருப்பு","இதுவரை சம்பாதித்தது","ரிடீம் பண்ணது","என் பேட்ஜ்கள்","கிடைச்சது","கொடுத்தது","அதிகம் பாராட்டப்பட்டவர்கள்","அதிகம் பெற்றவர்கள்","அதிகம் கொடுத்தவர்கள்","எல்லாம்","விருது பட்ஜெட்","டீம் கவரேஜ்","👀 நன்றிக்காக காத்திருக்கிறவங்க","🌟 சக ஊழியரை பாராட்டுங்க","யாரை பாராட்டுறீங்க?","ஒரு மதிப்பை தேர்ந்தெடுங்க","அவங்க என்ன பண்ணாங்க? தெளிவா சொல்லுங்க","பாயிண்ட்ஸ் சேருங்க (விருப்பம்)","ஒருத்தருக்கு பாயிண்ட்ஸ்","பாயிண்ட்ஸ் இல்லை","கமெண்ட்ஸ்","கமெண்ட் போடுங்க","இன்னைக்கு","நாளைக்கு","வருஷம் நம்மோட","வருஷங்கள் நம்மோட","பாராட்டினாங்க","ஸ்பாட் விருது கொடுத்தாங்க","முடிச்சாங்க","பிறந்தநாள் வாழ்த்துக்கள்","கமெண்ட்ஸ்","கமெண்ட்","பூஸ்ட்","கார்டு டவுன்லோடு","இந்த வருஷ பாராட்டுகள்","இந்த மாசம் கொடுக்க மீதி","விருது பட்ஜெட் மீதி","இன்னும் தேவையான பாயிண்ட்ஸ்","பாயிண்ட்ஸ்","காத்திருக்கு","அப்ரூவ் ஆச்சு","கொடுத்தாச்சு","நிராகரிச்சாச்சு","HR அப்ரூவலுக்கு காத்திருக்கு","இந்த மாசம்","இந்த காலாண்டு","இந்த வருஷம்","எல்லா ஷோரூம்களும்","எனக்கு கிடைச்ச பாராட்டுகள்","நான் கொடுத்த பாராட்டுகள்","கிடைச்சது","கொடுத்தது","சம்பாதிச்ச பாயிண்ட்ஸ்","உங்க பாஸ்வேர்டு வெச்சுக்கோங்க","புது பாஸ்வேர்டு","இன்னொரு தடவை டைப் பண்ணுங்க","பாஸ்வேர்டு சேவ் பண்ணுங்க","இப்போதைய பாஸ்வேர்டு","கஸ்டமர் மகிழ்ச்சி","டீம்வொர்க்","கூடுதல் முயற்சி","நம்பிக்கை & நேர்மை","சிறப்பு","பொறுப்பு","கற்றல் & வளர்ச்சி","நன்றி","கொண்டாட்டம்","பாராட்டு","ஸ்பாட் விருது","பணி ஆண்டுவிழா","பிறந்தநாள்","ஒரு நன்றிக்கு செலவில்லை, ஆனா அர்த்தம் நிறைய!","நல்ல வேலை எல்லாருக்கும் தெரியணும்!","ஒவ்வொரு ஹேப்பி கஸ்டமரும் உங்ககிட்ட இருந்துதான் ஆரம்பம்!","இன்னைக்கு ஒரு சக ஊழியரை உற்சாகப்படுத்துங்க!","நல்ல டீம், வைரத்தை விட ஜொலிக்கும்!","சின்ன வெற்றிகளையும் சத்தமா கொண்டாடுவோம்!","அடிக்கடி பாராட்டுங்க. நியாயமா பரிசளிங்க.","சுவர்ல போஸ்ட் ஆச்சு. பாராட்டியதற்கு நன்றி!","HR-க்கு கோரிக்கை அனுப்பியாச்சு","இதுவரை பாராட்டப்படலை","கடைசியா பாராட்டப்பட்டது","நாள் முன்பு","எனக்கு கிடைச்ச பாராட்டுகள்"],
+te: ["🏠 గోడ","🎁 బహుమతులు","🏅 నా గుర్తింపులు","🏆 లీడర్‌బోర్డ్","👥 నా టీమ్","🌟 ఒకరిని అభినందించండి","పాస్‌వర్డ్ మార్చండి","సైన్ అవుట్","సైన్ ఇన్","ఉద్యోగి","మేనేజర్","అడ్మిన్","ఉద్యోగి లాగిన్","మేనేజర్ లాగిన్","అడ్మిన్ లాగిన్","ఉద్యోగి ID","పాస్‌వర్డ్","రిడీమ్ చేయండి","అభినందించండి","శుభాకాంక్షలు పంపండి","రద్దు","పోస్ట్","మూసివేయండి","అభినందన పోస్ట్ చేయండి","అవార్డు పంపండి","💡 సందేశం సూచించండి","✨ రాయడంలో సహాయం","💬 అభినందన","⚡ స్పాట్ అవార్డు","⚡ స్పాట్ అవార్డు ఇవ్వండి","నమస్కారం GRTian","సైన్ ఇన్ చేసి సహోద్యోగులను అభినందించండి, మీరు సంపాదించినది చూడండి, పాయింట్లను బహుమతులుగా మార్చుకోండి.","🎉 ఈ వారం వేడుకలు","అభినందనల గోడ","అందరూ","నా షోరూమ్","నాకు సంబంధించినవి","బహుమతుల జాబితా","నా రిడీమ్‌లు","పాయింట్ల బ్యాలెన్స్","ఇప్పటివరకు సంపాదించినవి","రిడీమ్ చేసినవి","నా బ్యాడ్జ్‌లు","అందుకున్నవి","ఇచ్చినవి","ఎక్కువగా అభినందించబడినవారు","ఎక్కువ అందుకున్నవారు","ఎక్కువ ఇచ్చినవారు","అన్నీ","అవార్డు బడ్జెట్","టీమ్ కవరేజ్","👀 ధన్యవాదం కోసం ఎదురుచూస్తున్నవారు","🌟 సహోద్యోగిని అభినందించండి","ఎవరిని అభినందిస్తున్నారు?","ఒక విలువను ఎంచుకోండి","వారు ఏమి చేశారు? స్పష్టంగా చెప్పండి","పాయింట్లు జోడించండి (ఐచ్ఛికం)","ఒక్కరికి పాయింట్లు","పాయింట్లు లేవు","వ్యాఖ్యలు","వ్యాఖ్య జోడించండి","ఈరోజు","రేపు","సంవత్సరం మాతో","సంవత్సరాలు మాతో","అభినందించారు","స్పాట్ అవార్డు ఇచ్చారు","పూర్తి చేశారు","పుట్టినరోజు శుభాకాంక్షలు","వ్యాఖ్యలు","వ్యాఖ్య","బూస్ట్","కార్డ్ డౌన్‌లోడ్","ఈ సంవత్సరం గుర్తింపులు","ఈ నెల ఇవ్వడానికి మిగిలినవి","మిగిలిన అవార్డు బడ్జెట్","ఇంకా కావలసిన పాయింట్లు","పాయింట్లు","పెండింగ్","ఆమోదించబడింది","ఇచ్చేశారు","తిరస్కరించబడింది","HR ఆమోదం కోసం వేచి ఉంది","ఈ నెల","ఈ త్రైమాసికం","ఈ సంవత్సరం","అన్ని షోరూమ్‌లు","నాకు వచ్చిన అభినందనలు","నేను ఇచ్చిన అభినందనలు","అందుకున్నవి","ఇచ్చినవి","సంపాదించిన పాయింట్లు","మీ పాస్‌వర్డ్ ఎంచుకోండి","కొత్త పాస్‌వర్డ్","మళ్ళీ టైప్ చేయండి","పాస్‌వర్డ్ సేవ్ చేయండి","ప్రస్తుత పాస్‌వర్డ్","కస్టమర్ ఆనందం","టీమ్‌వర్క్","అదనపు కృషి","నమ్మకం & నిజాయితీ","శ్రేష్ఠత","బాధ్యత","నేర్చుకోవడం & ఎదుగుదల","ధన్యవాదాలు","వేడుక","అభినందన","స్పాట్ అవార్డు","ఉద్యోగ వార్షికోత్సవం","పుట్టినరోజు","ధన్యవాదం చెప్పడానికి ఖర్చు లేదు, కానీ విలువ ఎంతో!","మంచి పనిని అందరూ చూడాలి!","ప్రతి సంతోషకరమైన కస్టమర్ మీతోనే మొదలవుతారు!","ఈరోజు ఒక సహోద్యోగిని ప్రోత్సహించండి!","మంచి టీమ్ వజ్రం కంటే మెరుస్తుంది!","చిన్న విజయాలను కూడా ఘనంగా జరుపుకుందాం!","తరచుగా అభినందించండి. న్యాయంగా బహుమతి ఇవ్వండి.","గోడపై పోస్ట్ అయింది. అభినందించినందుకు ధన్యవాదాలు!","HR కి అభ్యర్థన పంపబడింది","ఇప్పటివరకు గుర్తింపు లేదు","చివరిగా గుర్తించబడింది","రోజుల క్రితం","నాకు వచ్చిన అభినందనలు"],
+kn: ["🏠 ಗೋಡೆ","🎁 ಬಹುಮಾನಗಳು","🏅 ನನ್ನ ಮೆಚ್ಚುಗೆಗಳು","🏆 ಲೀಡರ್‌ಬೋರ್ಡ್","👥 ನನ್ನ ತಂಡ","🌟 ಯಾರನ್ನಾದರೂ ಮೆಚ್ಚಿ","ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ","ಸೈನ್ ಔಟ್","ಸೈನ್ ಇನ್","ಉದ್ಯೋಗಿ","ಮ್ಯಾನೇಜರ್","ಅಡ್ಮಿನ್","ಉದ್ಯೋಗಿ ಲಾಗಿನ್","ಮ್ಯಾನೇಜರ್ ಲಾಗಿನ್","ಅಡ್ಮಿನ್ ಲಾಗಿನ್","ಉದ್ಯೋಗಿ ID","ಪಾಸ್‌ವರ್ಡ್","ರಿಡೀಮ್ ಮಾಡಿ","ಮೆಚ್ಚಿ","ಶುಭಾಶಯ ಕಳುಹಿಸಿ","ರದ್ದು","ಪೋಸ್ಟ್","ಮುಚ್ಚಿ","ಮೆಚ್ಚುಗೆ ಪೋಸ್ಟ್ ಮಾಡಿ","ಪ್ರಶಸ್ತಿ ಕಳುಹಿಸಿ","💡 ಸಂದೇಶ ಸಲಹೆ","✨ ಬರೆಯಲು ಸಹಾಯ","💬 ಮೆಚ್ಚುಗೆ","⚡ ಸ್ಪಾಟ್ ಪ್ರಶಸ್ತಿ","⚡ ಸ್ಪಾಟ್ ಪ್ರಶಸ್ತಿ ನೀಡಿ","ನಮಸ್ಕಾರ GRTian","ಸೈನ್ ಇನ್ ಮಾಡಿ: ಸಹೋದ್ಯೋಗಿಗಳನ್ನು ಮೆಚ್ಚಿ, ನೀವು ಗಳಿಸಿದ್ದನ್ನು ನೋಡಿ, ಪಾಯಿಂಟ್‌ಗಳನ್ನು ಬಹುಮಾನಕ್ಕೆ ಬದಲಿಸಿ.","🎉 ಈ ವಾರದ ಸಂಭ್ರಮಗಳು","ಮೆಚ್ಚುಗೆಯ ಗೋಡೆ","ಎಲ್ಲರೂ","ನನ್ನ ಶೋರೂಮ್","ನನಗೆ ಸಂಬಂಧಿಸಿದ್ದು","ಬಹುಮಾನಗಳ ಪಟ್ಟಿ","ನನ್ನ ರಿಡೀಮ್‌ಗಳು","ಪಾಯಿಂಟ್ ಬಾಕಿ","ಇದುವರೆಗೆ ಗಳಿಸಿದ್ದು","ರಿಡೀಮ್ ಮಾಡಿದ್ದು","ನನ್ನ ಬ್ಯಾಡ್ಜ್‌ಗಳು","ಪಡೆದದ್ದು","ನೀಡಿದ್ದು","ಹೆಚ್ಚು ಮೆಚ್ಚುಗೆ ಪಡೆದವರು","ಹೆಚ್ಚು ಪಡೆದವರು","ಹೆಚ್ಚು ನೀಡಿದವರು","ಎಲ್ಲಾ","ಪ್ರಶಸ್ತಿ ಬಜೆಟ್","ತಂಡದ ವ್ಯಾಪ್ತಿ","👀 ಧನ್ಯವಾದಕ್ಕಾಗಿ ಕಾಯುತ್ತಿರುವವರು","🌟 ಸಹೋದ್ಯೋಗಿಯನ್ನು ಮೆಚ್ಚಿ","ಯಾರನ್ನು ಮೆಚ್ಚುತ್ತಿದ್ದೀರಿ?","ಒಂದು ಮೌಲ್ಯ ಆರಿಸಿ","ಅವರು ಏನು ಮಾಡಿದರು? ಸ್ಪಷ್ಟವಾಗಿ ಹೇಳಿ","ಪಾಯಿಂಟ್ ಸೇರಿಸಿ (ಐಚ್ಛಿಕ)","ಒಬ್ಬರಿಗೆ ಪಾಯಿಂಟ್","ಪಾಯಿಂಟ್ ಇಲ್ಲ","ಕಾಮೆಂಟ್‌ಗಳು","ಕಾಮೆಂಟ್ ಸೇರಿಸಿ","ಇಂದು","ನಾಳೆ","ವರ್ಷ ನಮ್ಮೊಂದಿಗೆ","ವರ್ಷಗಳು ನಮ್ಮೊಂದಿಗೆ","ಮೆಚ್ಚಿದರು","ಸ್ಪಾಟ್ ಪ್ರಶಸ್ತಿ ನೀಡಿದರು","ಪೂರ್ಣಗೊಳಿಸಿದರು","ಹುಟ್ಟುಹಬ್ಬದ ಶುಭಾಶಯಗಳು","ಕಾಮೆಂಟ್‌ಗಳು","ಕಾಮೆಂಟ್","ಬೂಸ್ಟ್","ಕಾರ್ಡ್ ಡೌನ್‌ಲೋಡ್","ಈ ವರ್ಷದ ಮೆಚ್ಚುಗೆಗಳು","ಈ ತಿಂಗಳು ನೀಡಲು ಉಳಿದಿದೆ","ಉಳಿದ ಪ್ರಶಸ್ತಿ ಬಜೆಟ್","ಇನ್ನೂ ಬೇಕಾದ ಪಾಯಿಂಟ್","ಪಾಯಿಂಟ್","ಬಾಕಿ","ಅನುಮೋದಿಸಲಾಗಿದೆ","ನೀಡಲಾಗಿದೆ","ತಿರಸ್ಕರಿಸಲಾಗಿದೆ","HR ಅನುಮೋದನೆಗೆ ಕಾಯುತ್ತಿದೆ","ಈ ತಿಂಗಳು","ಈ ತ್ರೈಮಾಸಿಕ","ಈ ವರ್ಷ","ಎಲ್ಲಾ ಶೋರೂಮ್‌ಗಳು","ನನಗೆ ಬಂದ ಮೆಚ್ಚುಗೆಗಳು","ನಾನು ನೀಡಿದ ಮೆಚ್ಚುಗೆಗಳು","ಪಡೆದದ್ದು","ನೀಡಿದ್ದು","ಗಳಿಸಿದ ಪಾಯಿಂಟ್","ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಆರಿಸಿ","ಹೊಸ ಪಾಸ್‌ವರ್ಡ್","ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ","ಪಾಸ್‌ವರ್ಡ್ ಉಳಿಸಿ","ಈಗಿನ ಪಾಸ್‌ವರ್ಡ್","ಗ್ರಾಹಕರ ಸಂತೋಷ","ತಂಡದ ಕೆಲಸ","ಹೆಚ್ಚುವರಿ ಪ್ರಯತ್ನ","ನಂಬಿಕೆ & ಪ್ರಾಮಾಣಿಕತೆ","ಶ್ರೇಷ್ಠತೆ","ಜವಾಬ್ದಾರಿ","ಕಲಿಕೆ & ಬೆಳವಣಿಗೆ","ಧನ್ಯವಾದ","ಸಂಭ್ರಮ","ಮೆಚ್ಚುಗೆ","ಸ್ಪಾಟ್ ಪ್ರಶಸ್ತಿ","ಸೇವಾ ವಾರ್ಷಿಕೋತ್ಸವ","ಹುಟ್ಟುಹಬ್ಬ","ಧನ್ಯವಾದಕ್ಕೆ ಖರ್ಚಿಲ್ಲ, ಆದರೆ ಅರ್ಥ ತುಂಬಾ!","ಒಳ್ಳೆಯ ಕೆಲಸ ಎಲ್ಲರಿಗೂ ಕಾಣಬೇಕು!","ಪ್ರತಿ ಖುಷಿಯಾದ ಗ್ರಾಹಕ ನಿಮ್ಮಿಂದಲೇ ಶುರು!","ಇಂದು ಒಬ್ಬ ಸಹೋದ್ಯೋಗಿಯನ್ನು ಹುರಿದುಂಬಿಸಿ!","ಒಳ್ಳೆಯ ತಂಡ ವಜ್ರಕ್ಕಿಂತ ಹೊಳೆಯುತ್ತದೆ!","ಸಣ್ಣ ಗೆಲುವುಗಳನ್ನೂ ಜೋರಾಗಿ ಆಚರಿಸೋಣ!","ಆಗಾಗ ಮೆಚ್ಚಿ. ನ್ಯಾಯವಾಗಿ ಬಹುಮಾನ ನೀಡಿ.","ಗೋಡೆಗೆ ಪೋಸ್ಟ್ ಆಯಿತು. ಮೆಚ್ಚಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದ!","HR ಗೆ ವಿನಂತಿ ಕಳುಹಿಸಲಾಗಿದೆ","ಇದುವರೆಗೆ ಮೆಚ್ಚುಗೆ ಇಲ್ಲ","ಕೊನೆಯದಾಗಿ ಮೆಚ್ಚಿದ್ದು","ದಿನಗಳ ಹಿಂದೆ","ನನಗೆ ಬಂದ ಮೆಚ್ಚುಗೆಗಳು"],
+hi: ["🏠 वॉल","🎁 इनाम","🏅 मेरी सराहना","🏆 लीडरबोर्ड","👥 मेरी टीम","🌟 किसी की सराहना करें","पासवर्ड बदलें","साइन आउट","साइन इन","कर्मचारी","मैनेजर","एडमिन","कर्मचारी लॉगिन","मैनेजर लॉगिन","एडमिन लॉगिन","कर्मचारी ID","पासवर्ड","रिडीम करें","सराहना करें","शुभकामनाएँ भेजें","रद्द करें","पोस्ट","बंद करें","सराहना पोस्ट करें","अवॉर्ड भेजें","💡 संदेश सुझाएँ","✨ लिखने में मदद","💬 सराहना","⚡ स्पॉट अवॉर्ड","⚡ स्पॉट अवॉर्ड दें","नमस्कारम GRTian","साइन इन करें: साथियों की सराहना करें, अपनी कमाई देखें और पॉइंट्स को इनाम में बदलें।","🎉 इस हफ़्ते के जश्न","सराहना की दीवार","सभी","मेरा शोरूम","मुझसे जुड़े","इनाम सूची","मेरे रिडीम","पॉइंट्स बैलेंस","अब तक कमाए","रिडीम किए","मेरे बैज","मिले","दिए","सबसे ज़्यादा सराहे गए","सबसे ज़्यादा पाने वाले","सबसे ज़्यादा देने वाले","सभी","अवॉर्ड बजट","टीम कवरेज","👀 धन्यवाद का इंतज़ार","🌟 साथी की सराहना करें","आप किसकी सराहना कर रहे हैं?","एक मूल्य चुनें","उन्होंने क्या किया? साफ़ बताएँ","पॉइंट्स जोड़ें (वैकल्पिक)","प्रति व्यक्ति पॉइंट्स","कोई पॉइंट नहीं","टिप्पणियाँ","टिप्पणी जोड़ें","आज","कल","साल हमारे साथ","साल हमारे साथ","ने सराहना की","ने स्पॉट अवॉर्ड दिया","पूरे किए","जन्मदिन मुबारक","टिप्पणियाँ","टिप्पणी","बूस्ट","कार्ड डाउनलोड","इस साल की सराहनाएँ","इस महीने देने के लिए बाकी","बचा अवॉर्ड बजट","और पॉइंट्स चाहिए","पॉइंट्स","लंबित","मंज़ूर","दे दिया","अस्वीकार","HR मंज़ूरी का इंतज़ार","इस महीने","इस तिमाही","इस साल","सभी शोरूम","मुझे मिली सराहना","मेरी दी सराहना","मिले","दिए","कमाए पॉइंट्स","अपना पासवर्ड चुनें","नया पासवर्ड","फिर से टाइप करें","पासवर्ड सेव करें","मौजूदा पासवर्ड","ग्राहक की खुशी","टीमवर्क","अतिरिक्त प्रयास","भरोसा और ईमानदारी","उत्कृष्टता","ज़िम्मेदारी","सीखना और आगे बढ़ना","धन्यवाद","जश्न","सराहना","स्पॉट अवॉर्ड","कार्य वर्षगांठ","जन्मदिन","धन्यवाद कहने में कुछ नहीं लगता, पर मायने बहुत हैं!","अच्छा काम सबको दिखना चाहिए!","हर खुश ग्राहक की शुरुआत आपसे होती है!","आज किसी साथी का हौसला बढ़ाइए!","अच्छी टीम हीरे से भी ज़्यादा चमकती है!","छोटी जीत का भी ज़ोरदार जश्न!","बार-बार सराहें। न्याय से इनाम दें।","वॉल पर पोस्ट हो गया। सराहना के लिए धन्यवाद!","HR को अनुरोध भेजा गया","अब तक सराहना नहीं","आख़िरी सराहना","दिन पहले","मुझे मिली सराहना"]
+};
+const I18_EXTRA = {
+  "Coming up": ["வரவிருக்கும் கொண்டாட்டங்கள்","రాబోయే వేడుకలు","ಮುಂದಿನ ಸಂಭ್ರಮಗಳು","आने वाले जश्न"],
+  "Your wallet": ["உங்க வாலட்","మీ వాలెట్","ನಿಮ್ಮ ವಾಲೆಟ್","आपका वॉलेट"],
+  "Wish": ["வாழ்த்து","శుభాకాంక్ష","ಶುಭಾಶಯ","बधाई"],
+  "Most recognised this month": ["இந்த மாசம் அதிகம் பாராட்டப்பட்டவர்கள்","ఈ నెల ఎక్కువగా అభినందించబడినవారు","ಈ ತಿಂಗಳು ಹೆಚ್ಚು ಮೆಚ್ಚುಗೆ ಪಡೆದವರು","इस महीने सबसे ज़्यादा सराहे गए"],
+  "Redeem points": ["பாயிண்ட்ஸ் ரிடீம்","పాయింట్లు రిడీమ్","ಪಾಯಿಂಟ್ ರಿಡೀಮ್","पॉइंट्स रिडीम करें"],
+  "Trial logins": ["சோதனை லாகின்கள்","ట్రయల్ లాగిన్‌లు","ಪ್ರಾಯೋಗಿಕ ಲಾಗಿನ್‌ಗಳು","ट्रायल लॉगिन"],
+  "Spotlight of the week": ["இந்த வார ஸ்பாட்லைட்","ఈ వారం స్పాట్‌లైట్","ಈ ವಾರದ ಸ್ಪಾಟ್‌ಲೈಟ್","इस हफ़्ते की स्पॉटलाइट"],
+  "Applaud": ["கைதட்டுங்க","చప్పట్లు","ಚಪ್ಪಾಳೆ","तालियाँ"],
+  "Comment": ["கமெண்ட்","వ్యాఖ్య","ಕಾಮೆಂಟ್","टिप्पणी"],
+  "Password": ["பாஸ்வேர்டு","పాస్‌వర్డ్","ಪಾಸ್‌ವರ್ಡ್","पासवर्ड"],
+  "Points balance": ["பாயிண்ட்ஸ் இருப்பு","పాయింట్ల బ్యాలెన్స్","ಪಾಯಿಂಟ್ ಬಾಕಿ","पॉइंट्स बैलेंस"],
+  "Left to give": ["கொடுக்க மீதி","ఇవ్వడానికి మిగిలినవి","ನೀಡಲು ಉಳಿದಿದೆ","देने के लिए बाकी"],
+  "Recognised this year": ["இந்த வருஷ பாராட்டுகள்","ఈ సంవత్సరం గుర్తింపులు","ಈ ವರ್ಷದ ಮೆಚ್ಚುಗೆಗಳು","इस साल की सराहना"],
+  "Worth": ["மதிப்பு","విలువ","ಮೌಲ್ಯ","मूल्य"],
+  "Award budget left": ["விருது பட்ஜெட் மீதி","మిగిలిన అవార్డు బడ్జెట్","ಉಳಿದ ಪ್ರಶಸ್ತಿ ಬಜೆಟ್","बचा अवॉर्ड बजट"],
+  "Waiting for a thank-you": ["நன்றிக்காக காத்திருக்கிறவங்க","ధన్యవాదం కోసం ఎదురుచూస్తున్నవారు","ಧನ್ಯವಾದಕ್ಕಾಗಿ ಕಾಯುತ್ತಿರುವವರು","धन्यवाद का इंतज़ार"],
+  "Your awards this month": ["இந்த மாசம் நீங்க கொடுத்த விருதுகள்","ఈ నెల మీ అవార్డులు","ಈ ತಿಂಗಳ ನಿಮ್ಮ ಪ್ರಶಸ್ತಿಗಳು","इस महीने आपके अवॉर्ड"],
+  "Give a spot award": ["ஸ்பாட் விருது கொடுங்க","స్పాట్ అవార్డు ఇవ్వండి","ಸ್ಪಾಟ್ ಪ್ರಶಸ್ತಿ ನೀಡಿ","स्पॉट अवॉर्ड दें"],
+  "Recognise a colleague": ["சக ஊழியரை பாராட்டுங்க","సహోద్యోగిని అభినందించండి","ಸಹೋದ್ಯೋಗಿಯನ್ನು ಮೆಚ್ಚಿ","साथी की सराहना करें"],
+  "Good work,": ["நல்ல வேலை,","మంచి పని,","ಒಳ್ಳೆಯ ಕೆಲಸ,","अच्छा काम,"],
+  "hallmarked.": ["ஹால்மார்க் ஆச்சு.","హాల్‌మార్క్ అయింది.","ಹಾಲ್‌ಮಾರ್ಕ್ ಆಯಿತು.","हॉलमार्क हुआ।"]
+};
+const I18D = {}; ["ta","te","kn","hi"].forEach((l, li) => { I18D[l] = {};
+  const strip = t => String(t).replace(/^[^A-Za-z\u0900-\u0DFF]+\s/u, "");
+  I18_KEYS.forEach((k, i) => { const v = I18_VALS[l][i]; if (v == null) return; I18D[l][k] = v; I18D[l][strip(k)] = strip(v); });
+  Object.keys(I18_EXTRA).forEach(k => { I18D[l][k] = I18_EXTRA[k][li]; }); });
+
+/* =========================================================
+   Languages: text is written in English and translated on screen.
+   ========================================================= */
+const LANGS = [{k:"en", n:"English"}, {k:"ta", n:"தமிழ்"}, {k:"te", n:"తెలుగు"}, {k:"kn", n:"ಕನ್ನಡ"}, {k:"hi", n:"हिन्दी"}];
+let LANG = (function(){ const v = lsGet("sr-lang"); return LANGS.some(l => l.k === v) ? v : "en"; })();
+function T(s){
+  if (LANG === "en") return null;
+  const d = I18D[LANG]; if (!d) return null;
+  if (Object.prototype.hasOwnProperty.call(d, s)) return d[s];
+  let m = s.match(/^(.+?)([:.!?…])$/);
+  if (m && Object.prototype.hasOwnProperty.call(d, m[1])) return d[m[1]] + m[2];
+  m = s.match(/^([\d,.]+) (pts|points)$/); if (m) return m[1] + " " + (d["pts"] || "pts");
+  return null;
+}
+const ORIG_TXT = new WeakMap();
+const TR_ATTRS = ["placeholder", "aria-label", "title"];
+function trText(n){
+  const p = n.parentElement; if (!p || p.closest("script,style,textarea,[data-notr]")) return;
+  let o = ORIG_TXT.get(n); if (o === undefined){ o = n.nodeValue; ORIG_TXT.set(n, o); }
+  let v = o;
+  if (LANG !== "en"){ const t = o.trim(); if (t && /[A-Za-z]/.test(t)){ const r = T(t); if (r != null) v = o.replace(t, r); } }
+  if (n.nodeValue !== v) n.nodeValue = v;
+}
+function trAttrs(el){
+  if (el.closest && el.closest("[data-notr]")) return;
+  TR_ATTRS.forEach(a => {
+    if (!el.hasAttribute(a)) return;
+    const cur = el.getAttribute(a), ok = "data-o-" + a, tk = "data-t-" + a;
+    let o = el.getAttribute(ok);
+    if (o == null || (cur !== o && cur !== el.getAttribute(tk))){ o = cur; el.setAttribute(ok, o); }
+    let v = o; if (LANG !== "en" && /[A-Za-z]/.test(o)){ const r = T(o.trim()); if (r != null) v = r; }
+    el.setAttribute(tk, v); if (cur !== v) el.setAttribute(a, v);
+  });
+}
+function translateTree(root){
+  if (!root) return;
+  if (root.nodeType === 3){ trText(root); return; }
+  if (root.nodeType !== 1) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) trText(n);
+  trAttrs(root); root.querySelectorAll("[placeholder],[aria-label],[title]").forEach(trAttrs);
+}
+function langSelHtml(){ return '<label class="langsel" data-notr title="Language"><span aria-hidden="true">🌐</span><select class="langSel" aria-label="Language">' + LANGS.map(l => '<option value="' + l.k + '"' + (l.k === LANG ? ' selected' : '') + '>' + l.n + '</option>').join("") + '</select></label>'; }
+function setLang(l){
+  LANG = LANGS.some(x => x.k === l) ? l : "en"; lsSet("sr-lang", LANG);
+  document.documentElement.lang = LANG;
+  $$(".langSel").forEach(s => { s.value = LANG; });
+  translateTree(document.body);
+}
+document.addEventListener("change", e => { if (e.target && e.target.classList && e.target.classList.contains("langSel")) setLang(e.target.value); });
+document.documentElement.lang = LANG;
+new MutationObserver(muts => { if (LANG === "en") return; muts.forEach(m => m.addedNodes.forEach(translateTree)); }).observe(document.body, {childList:true, subtree:true});
+
+/* =========================================================
+   Programme defaults (admin can change all of these)
+   ========================================================= */
+const DEFAULT_VALUES = [
+  {k:"customer", code:"CD", name:"Customer Delight", e:"💎", c:"#8a1538"},
+  {k:"team", code:"TW",     name:"Teamwork",         e:"🤝", c:"#0f6b4f"},
+  {k:"extra", code:"XM",    name:"Extra Mile",       e:"🚀", c:"#b4561a"},
+  {k:"trust", code:"TI",    name:"Trust & Integrity",e:"🛡️", c:"#1f4e8c"},
+  {k:"excel", code:"EX",    name:"Excellence",       e:"🏆", c:"#a87400"},
+  {k:"own", code:"OW",      name:"Ownership",        e:"🎯", c:"#4b3a8c"},
+  {k:"learn", code:"LG",    name:"Learning & Growth",e:"📚", c:"#0e7f96"},
+  {k:"thanks", code:"TY",   name:"Thank You",        e:"🙏", c:"#9c2f5a"},
+  {k:"celebrate",name:"Celebration",      e:"🎉", c:"#c0392b"}
+];
+const DEFAULT_SETTINGS = {
+  peerAllowance:50,   // points each employee can give per month
+  peerMax:20,         // max points per person in one appreciation
+  mgrBudget:2000,     // manager spot-award budget per month
+  spotMax:1000,       // max points per person in one spot award
+  approvalAbove:500,  // spot awards above this (per person) need HR approval
+  birthdayPts:100,
+  otherYearPts:100,   // anniversary points for non-milestone years
+  ms:{"1":250,"3":500,"5":1000,"10":2500,"15":3000,"20":4000,"25":5000},
+  rupeePerPt:1
+};
+const DEFAULT_CATALOG = [
+  {id:"c1", e:"🪙", name:"Gold coin, 1 gram", cat:"Gold & Silver", pts:8000, on:true},
+  {id:"c2", e:"🥈", name:"Silver coin, 10 grams", cat:"Gold & Silver", pts:1500, on:true},
+  {id:"c3", e:"🎟️", name:"Shopping voucher ₹500", cat:"Vouchers", pts:500, on:true},
+  {id:"c4", e:"🍱", name:"Food delivery voucher ₹300", cat:"Vouchers", pts:300, on:true},
+  {id:"c5", e:"⛽", name:"Fuel voucher ₹1,000", cat:"Vouchers", pts:1000, on:true},
+  {id:"c6", e:"🎬", name:"Movie tickets for two", cat:"Experiences", pts:600, on:true},
+  {id:"c7", e:"🍽️", name:"Family dinner voucher", cat:"Experiences", pts:1500, on:true},
+  {id:"c8", e:"🏖️", name:"Extra paid day off", cat:"Time off", pts:2500, on:true},
+  {id:"c9", e:"🎧", name:"Wireless earbuds", cat:"Merchandise", pts:2000, on:true},
+  {id:"c10",e:"💗", name:"Donate ₹250 to a charity", cat:"Give back", pts:250, on:true}
+];
+const KIND = {peer:"Appreciation", spot:"Spot award", milestone:"Work anniversary", birthday:"Birthday", boost:"Boost"};
+const KIND_E = {peer:"💬", spot:"⚡", milestone:"🎖️", birthday:"🎂", boost:"⚡"};
+const REACTS = ["👏","❤️","🎉","💎"];
+
+/* =========================================================
+   Data layer: every document lives in `docs` keyed by path.
+   Shared mode mirrors the artifact database; demo and local
+   modes keep the same shape in this browser.
+   ========================================================= */
+const LOCAL_KEY = "sparkle-rewards-v1", DEMO_KEY = "sparkle-rewards-demo-v1";
+const DEMO_ON = lsGet("sr-demo") === "1";
+let docs = {}, VER = 0;
+let mode = "loading";          // loading | shared | local | demo
+let db = null, downloads = null, sampleFn = null, isOwnerEditor = false;
+const chains = {};
+function saveLocal(){ try { localStorage.setItem(mode === "demo" ? DEMO_KEY : LOCAL_KEY, JSON.stringify(docs)); } catch(e){ toast("Couldn't save in this browser: storage may be full"); } }
+function writeDoc(path, data){
+  docs[path] = clone(data); VER++;
+  if (mode === "shared"){
+    const snap = clone(data);
+    chains[path] = (chains[path] || Promise.resolve()).then(() => db.doc(path).set(snap)).catch(e => toast("Not saved: " + errText(e)));
+    return chains[path];
+  }
+  saveLocal(); return Promise.resolve();
+}
+async function writeDocStrict(path, data){
+  if (mode === "shared") await db.doc(path).set(clone(data));
+  docs[path] = clone(data); VER++;
+  if (mode !== "shared") saveLocal();
+}
+function deleteDoc(path){
+  delete docs[path]; VER++;
+  if (mode === "shared"){
+    chains[path] = (chains[path] || Promise.resolve()).then(() => db.doc(path).delete()).catch(e => toast("Not deleted: " + errText(e)));
+    return chains[path];
+  }
+  saveLocal(); return Promise.resolve();
+}
+function errText(e){
+  if (!e) return "unknown error";
+  if (e.code === "quota_exceeded") return "storage is full";
+  if (e.code === "resource_exhausted") return "too many changes at once, try again shortly";
+  if (e.code === "permission_denied" || e.code === "not_granted") return "you don't have permission to change this";
+  return e.message || e.code || "unknown error";
+}
+const memoStore = {};
+function memo(name, fn){ const m = memoStore[name]; if (m && m.v === VER) return m.r; const r = fn(); memoStore[name] = {v:VER, r}; return r; }
+function coll(prefix){ return memo("c:" + prefix, () => Object.keys(docs).filter(k => k.indexOf(prefix + "/") === 0).map(k => docs[k]).filter(Boolean)); }
+
+/* Getters */
+function settings(){ const s = Object.assign({}, DEFAULT_SETTINGS, docs["config/settings"] || {}); s.ms = Object.assign({}, (docs["config/settings"] || {}).ms || DEFAULT_SETTINGS.ms); return s; }
+function values(){ const v = (docs["config/values"] || {}).list; return (v && v.length ? v : DEFAULT_VALUES).filter(x => x.on !== false); }
+function allValues(){ const v = (docs["config/values"] || {}).list; return v && v.length ? v : DEFAULT_VALUES; }
+function valueOf(k){ return allValues().find(v => v.k === k) || {k, name:"Recognition", e:"⭐", c:"#0f6b4f"}; }
+function valueCode(v){ if (v.code) return String(v.code).slice(0,3).toUpperCase(); const p = String(v.name||"?").split(/[\s&]+/).filter(Boolean); return ((p[0]||"?")[0] + (p[1] ? p[1][0] : (p[0][1]||""))).toUpperCase(); }
+function catalog(){ const c = (docs["config/catalog"] || {}).list; return c && c.length ? c : DEFAULT_CATALOG; }
+
+/* Staff list: stored in chunks staff/p0..pN as columns + rows */
+const SCOLS = ["id","name","showroom","dept","designation","grade","doj","dob","gender","mobile"];
+function keyOf(id){ return String(id).trim().replace(/[^A-Za-z0-9_\-.:@+]/g, "_").slice(0, 120) || "_"; }
+function staffList(){
+  return memo("staff", () => {
+    const main = docs["staff/p0"] || {parts:0};
+    const cols = main.cols || SCOLS, out = [];
+    for (let i=0;i<(main.parts||1);i++){ const p = docs["staff/p" + i]; if (!p || !p.data) continue;
+      p.data.forEach(a => { const o = {}; cols.forEach((k,j) => { if (a[j] != null && a[j] !== "") o[k] = a[j]; }); o.key = keyOf(o.id); if (!o.showroom) o.showroom = "Unassigned"; out.push(o); }); }
+    const sm = docs["staff/sample"];
+    if (sm && sm.data){ const seen = new Set(out.map(r => r.key)); sm.data.forEach(a => { const o = {sample:true}; (sm.cols || SCOLS).forEach((k,j) => { if (a[j] != null && a[j] !== "") o[k] = a[j]; }); o.key = keyOf(o.id); if (!seen.has(o.key)) out.push(o); }); }
+    return out;
+  });
+}
+function master(){ return memo("master", () => { const m = {}; staffList().forEach(r => { m[r.key] = r; }); return m; }); }
+function nameOf(key){ if (key === "admin") return "HR Team"; const r = master()[key]; return r ? r.name : "Former colleague"; }
+function showrooms(){ return memo("srs", () => Array.from(new Set(staffList().map(r => r.showroom))).sort()); }
+function depts(){ return memo("depts", () => Array.from(new Set(staffList().map(r => r.dept || "Unassigned"))).sort()); }
+function tenureYears(doj){ if (!/^\d{4}-\d{2}-\d{2}$/.test(doj || "")) return null; return (Date.now() - new Date(doj + "T12:00:00").getTime()) / (365.25*DAY); }
+function tenureBand(doj){ const y = tenureYears(doj); if (y == null) return "Unknown"; if (y < 1) return "Under 1 year"; if (y < 3) return "1 to 3 years"; if (y < 5) return "3 to 5 years"; if (y < 10) return "5 to 10 years"; return "10 years or more"; }
+
+/* Managers: designation containing Manager / HOD / Head / Incharge / Supervisor,
+   plus anyone the admin adds. Regional, zonal and senior leaders see every showroom. */
+function mgrCfg(){ return ((docs["config/managers"] || {}).list) || []; }
+function autoMgr(r){ const d = String(r.designation || "").toUpperCase(); return /\b(MANAGER|HOD|HEAD|INCHARGE|IN-CHARGE|SUPERVISOR)\b/.test(d); }
+function mgrOf(key){
+  const r = master()[key]; if (!r) return null;
+  const s = settings(), c = mgrCfg().find(m => keyOf(m.id) === key);
+  if (c){ if (c.off) return null; return {showrooms: c.showrooms && c.showrooms.length ? c.showrooms : [r.showroom], budget: c.budget !== "" && c.budget != null ? +c.budget : s.mgrBudget, manual:true}; }
+  if (!autoMgr(r)) return null;
+  const d = String(r.designation || "").toUpperCase();
+  const all = /\b(REGIONAL|ZONAL|AREA|GENERAL|GM|AGM|DGM|VP|CHIEF|DIRECTOR|HOD|HEAD)\b/.test(d);
+  return {showrooms: all ? ["all"] : [r.showroom], budget: s.mgrBudget, manual:false};
+}
+function teamOf(key){
+  const m = mgrOf(key); if (!m) return [];
+  const all = m.showrooms.indexOf("all") >= 0;
+  return staffList().filter(r => r.key !== key && (all || m.showrooms.indexOf(r.showroom) >= 0));
+}
+function allManagers(){ return memo("mgrs", () => staffList().filter(r => mgrOf(r.key))); }
+
+/* =========================================================
+   Recognition maths
+   ========================================================= */
+function recs(){ return coll("recog"); }
+function isLive(r){ return r.status !== "pending" && r.status !== "rejected"; }
+function received(key){ return memo("rcv:" + key, () => recs().filter(r => r.kind !== "boost" && isLive(r) && (r.to || []).indexOf(key) >= 0).sort((a,b) => b.ts - a.ts)); }
+function given(key){ return memo("giv:" + key, () => recs().filter(r => r.kind !== "boost" && r.from === key).sort((a,b) => b.ts - a.ts)); }
+function earnedOf(key){ return recs().reduce((a, r) => a + (isLive(r) && (r.to || []).indexOf(key) >= 0 ? (+r.pts || 0) : 0), 0); }
+function redeems(){ return coll("redeem"); }
+function spentOf(key){ return redeems().reduce((a, x) => a + (x.key === key && x.status !== "rejected" ? (+x.pts || 0) : 0), 0); }
+function walletOf(key){ return memo("w:" + key, () => { const e = earnedOf(key), s = spentOf(key); return {earned:e, spent:s, bal:e - s}; }); }
+function peerUsed(key, m){ m = m || curMonth(); return recs().reduce((a, r) => a + (r.from === key && r.kind === "peer" && monthOf(r.ts) === m ? (+r.pts || 0) * (r.to || []).length : 0), 0); }
+function budgetUsed(key, m){ m = m || curMonth(); return recs().reduce((a, r) => a + (r.from === key && (r.kind === "spot" || r.kind === "boost") && r.status !== "rejected" && monthOf(r.ts) === m ? (+r.pts || 0) * (r.to || []).length : 0), 0); }
+function boostsOf(id){ return recs().filter(r => r.kind === "boost" && r.ref === id && r.status !== "rejected"); }
+function lastRecognised(key){ const r = received(key)[0]; return r ? r.ts : null; }
+function reactsOf(id){ return coll("react").filter(x => x.r === id); }
+function cmtsOf(id){ return coll("cmt").filter(x => x.r === id).sort((a,b) => a.ts - b.ts); }
+function periodRange(p){
+  const now = new Date(), end = Date.now();
+  if (p === "month") return [new Date(now.getFullYear(), now.getMonth(), 1).getTime(), end];
+  if (p === "quarter"){ const q = Math.floor(now.getMonth()/3)*3; return [new Date(now.getFullYear(), q, 1).getTime(), end]; }
+  if (p === "year") return [new Date(now.getFullYear(), 0, 1).getTime(), end];
+  if (p === "d90") return [end - 90*DAY, end];
+  return [end - 30*DAY, end];
+}
+const PERIODS = [{k:"d30", l:"Last 30 days"}, {k:"month", l:"This month"}, {k:"d90", l:"Last 90 days"}, {k:"quarter", l:"This quarter"}, {k:"year", l:"This year"}];
+
+/* Upcoming celebrations from DOB and DOJ */
+function celebrations(fromDate, days, filter){
+  const out = [], base = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
+  staffList().forEach(r => {
+    if (filter && !filter(r)) return;
+    for (let i=0;i<days;i++){
+      const d = new Date(base.getTime() + i*DAY), md = pad(d.getMonth()+1) + "-" + pad(d.getDate());
+      if (r.dob && r.dob.slice(5) === md) out.push({type:"birthday", r, date:ymd(d), days:i});
+      if (r.doj && r.doj.slice(5) === md){ const y = d.getFullYear() - +r.doj.slice(0,4); if (y >= 1) out.push({type:"anniv", r, date:ymd(d), years:y, days:i}); }
+    }
+  });
+  return out.sort((a,b) => a.days - b.days);
+}
+function msPoints(y){ const s = settings(); return s.ms[String(y)] != null ? +s.ms[String(y)] : (+s.otherYearPts || 0); }
+function isMilestone(y){ return settings().ms[String(y)] != null; }
+
+/* =========================================================
+   Passwords (hashed in the browser, same scheme as Sparkle Stars)
+   ========================================================= */
+const ADMIN_ID = "81940", ADM_KEY = "adm~81940", ADM_PATH = "pins/adm~81940";
+function adminAuth(){ const a = docs[ADM_PATH] || docs["config/adminAuth"]; return a && a.hash ? a : null; }
+function adminId(){ const a = adminAuth(); return (a && a.id) || ADMIN_ID; }
+function cred(key){ if (key.indexOf("adm~") === 0) return adminAuth(); const c = docs["pins/" + key]; return c && c.hash ? c : null; }
+function defaultPin(id){ const d = String(id).replace(/\D/g,""); return d.length >= 4 ? d.slice(-4) : String(id).slice(-4); }
+function credInfo(key){ const c = cred(key); if (c) return {kind: c.by === "admin" ? "admintemp" : "own", mustChange: !!c.mustChange}; return {kind:"default", mustChange: true}; }
+async function sha(text){
+  if (window.crypto && crypto.subtle){ const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)); return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join(""); }
+  let h = 5381; for (let i=0;i<text.length;i++) h = ((h<<5)+h+text.charCodeAt(i))>>>0; return "x" + h.toString(16);
+}
+function randHex(n){ const a = new Uint8Array(n || 16); if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a); else a.forEach((_,i) => a[i] = Math.floor(Math.random()*256)); return Array.from(a).map(b => b.toString(16).padStart(2,"0")).join(""); }
+async function pbkdf(pw, salt, key){
+  if (!(window.crypto && crypto.subtle)) return sha("pw:" + salt + ":" + key + ":" + pw);
+  const enc = new TextEncoder();
+  const base = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({name:"PBKDF2", salt:enc.encode(salt + ":" + key), iterations:150000, hash:"SHA-256"}, base, 256);
+  return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+async function verifyPw(key, emp, pw){
+  const c = cred(key);
+  if (c) return (await pbkdf(pw, c.salt, key)) === c.hash;
+  if (key.indexOf("adm~") === 0) return false;
+  return pw === defaultPin(emp.id);
+}
+async function makeCred(key, pw, by){ const salt = randHex(16); return {hash: await pbkdf(pw, salt, key), salt, mustChange: by === "admin", by, at: Date.now()}; }
+function pwProblem(pw, emp){
+  if (pw.length < 6) return "Use at least 6 characters.";
+  if (pw.length > 40) return "Use 40 characters or fewer.";
+  if (!/[A-Za-z]/.test(pw) || !/\d/.test(pw)) return "Include at least one letter and one number.";
+  if (pw === defaultPin(emp.id) || pw.toLowerCase() === String(emp.id).toLowerCase()) return "Don't use your employee ID or the temporary password.";
+  return "";
+}
+
+/* =========================================================
+   Illustrations (inline SVG so they work everywhere and follow the theme)
+   ========================================================= */
+const GOLD = {hi:"#f6dc8f", mid:"#d9ab3f", lo:"#9b7217", deep:"#6e500f"};
+/* Kasu mala: South Indian coin necklace with a temple pendant */
+function necklaceSvg(){
+  let s = '<svg viewBox="0 0 400 430" role="img" aria-label="Gold coin necklace illustration"><defs>' +
+    '<radialGradient id="gb" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="' + GOLD.hi + '"/><stop offset=".55" stop-color="' + GOLD.mid + '"/><stop offset="1" stop-color="' + GOLD.lo + '"/></radialGradient>' +
+    '<radialGradient id="rb" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff8f80"/><stop offset=".5" stop-color="#b0362a"/><stop offset="1" stop-color="#5e140e"/></radialGradient>' +
+    '<radialGradient id="eb" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#9ff0c9"/><stop offset=".5" stop-color="#1f9a6b"/><stop offset="1" stop-color="#0a4636"/></radialGradient>' +
+    '<radialGradient id="pb" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#ece6d6"/><stop offset="1" stop-color="#b9b19c"/></radialGradient></defs>';
+  const strand = (rx, ry, step, every, big) => { let o = ""; for (let a=8; a<=172; a+=step){ const t = a*Math.PI/180, x = 200 + rx*Math.cos(t), y = 30 + ry*Math.sin(t), i = Math.round((a-8)/step);
+      if (every && i % every === 2 && a > 22 && a < 158){ o += '<g transform="translate(' + x.toFixed(1) + ',' + (y + 13).toFixed(1) + ')"><line x1="0" y1="-13" x2="0" y2="-6" stroke="' + GOLD.lo + '" stroke-width="1.5"/><circle r="11" fill="url(#gb)" stroke="' + GOLD.deep + '" stroke-width="1"/><circle r="7" fill="none" stroke="' + GOLD.deep + '" stroke-opacity=".55" stroke-width="1"/><circle r="2" fill="' + GOLD.deep + '" fill-opacity=".55"/></g>'; }
+      else o += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + (i % 2 ? big*.62 : big) + '" fill="url(#gb)" stroke="' + GOLD.deep + '" stroke-opacity=".5" stroke-width=".8"/>'; }
+    return o; };
+  s += strand(150, 175, 4.2, 0, 3.4) + strand(172, 214, 4.6, 3, 4.6);
+  // pendant
+  s += '<g transform="translate(200,262)">' +
+    '<path d="M0 -26 C30 -26 46 4 40 30 C34 58 12 78 0 92 C-12 78 -34 58 -40 30 C-46 4 -30 -26 0 -26 Z" fill="url(#gb)" stroke="' + GOLD.deep + '" stroke-width="1.6"/>' +
+    '<path d="M0 -14 C20 -14 30 8 26 28 C22 48 8 62 0 72 C-8 62 -22 48 -26 28 C-30 8 -20 -14 0 -14 Z" fill="none" stroke="' + GOLD.deep + '" stroke-opacity=".5" stroke-width="1.2"/>' +
+    '<ellipse cx="0" cy="26" rx="13" ry="18" fill="url(#rb)" stroke="' + GOLD.deep + '" stroke-width="1.4"/>' +
+    [[-20,4],[20,4],[-18,46],[18,46],[0,-10],[0,66]].map(p => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="4.4" fill="url(#eb)" stroke="' + GOLD.deep + '" stroke-width=".8"/>').join("") +
+    '<ellipse cx="-4" cy="18" rx="3.5" ry="6" fill="#fff" fill-opacity=".45"/>' +
+    [-26,0,26].map(dx => '<line x1="' + dx*.6 + '" y1="84" x2="' + dx + '" y2="' + (dx ? 114 : 124) + '" stroke="' + GOLD.lo + '" stroke-width="1.4"/><circle cx="' + dx + '" cy="' + (dx ? 120 : 131) + '" r="6.5" fill="url(#pb)" stroke="#9c947f" stroke-width=".8"/>').join("") +
+    '<circle cx="0" cy="-30" r="7" fill="url(#gb)" stroke="' + GOLD.deep + '" stroke-width="1"/></g>';
+  // sparkle glints
+  s += [[96,150,1],[318,118,.8],[236,330,.9]].map(g => '<path transform="translate(' + g[0] + ',' + g[1] + ') scale(' + g[2] + ')" d="M0 -12 L2.5 -2.5 L12 0 L2.5 2.5 L0 12 L-2.5 2.5 L-12 0 L-2.5 -2.5 Z" fill="#fff6d8"/>').join("");
+  return s + '</svg>';
+}
+/* Showroom: temple arches, brass lamps, a glass counter with trays of jewellery.
+   Split into three layers so each can move at its own parallax depth. */
+function showroomBack(){
+  let s = '<svg viewBox="0 0 560 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true">';
+  for (let i=0;i<5;i++){ const x = 10 + i*112; s += '<path d="M' + x + ' 360 V140 Q' + (x+50) + ' 40 ' + (x+100) + ' 140 V360 Z" fill="var(--em)" fill-opacity="' + (i % 2 ? .1 : .16) + '"/><path d="M' + (x+14) + ' 360 V146 Q' + (x+50) + ' 70 ' + (x+86) + ' 146 V360" fill="none" stroke="var(--brass)" stroke-opacity=".35" stroke-width="2"/>'; }
+  return s + '<rect x="0" y="300" width="560" height="60" fill="var(--ink)" fill-opacity=".06"/></svg>';
+}
+function showroomMid(){
+  let s = '<svg viewBox="0 0 560 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true">';
+  [[110,92],[280,70],[450,92]].forEach(([x, y]) => { s += '<line x1="' + x + '" y1="0" x2="' + x + '" y2="' + y + '" stroke="var(--ink)" stroke-opacity=".5" stroke-width="1.5"/>' +
+    '<path d="M' + (x-26) + ' ' + (y+26) + ' Q' + x + ' ' + (y-8) + ' ' + (x+26) + ' ' + (y+26) + ' Z" fill="' + GOLD.mid + '" stroke="' + GOLD.deep + '" stroke-width="1.2"/>' +
+    '<ellipse cx="' + x + '" cy="' + (y+30) + '" rx="34" ry="10" fill="' + GOLD.hi + '" fill-opacity=".35"/><circle cx="' + x + '" cy="' + (y+28) + '" r="4" fill="#fff6d8"/>'; });
+  return s + '</svg>';
+}
+function showroomFront(){
+  let s = '<svg viewBox="0 0 560 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true">' +
+    '<rect x="40" y="236" width="480" height="124" fill="var(--ink)"/><rect x="40" y="226" width="480" height="14" fill="var(--brass)"/>' +
+    '<rect x="58" y="252" width="444" height="90" fill="var(--paper-2)" fill-opacity=".14" stroke="var(--brass)" stroke-opacity=".6"/>' +
+    '<path d="M70 256 L120 256 L84 338 L58 338 Z" fill="#fff" fill-opacity=".07"/>';
+  // trays on the counter
+  const tray = (x, w) => '<rect x="' + x + '" y="212" width="' + w + '" height="16" fill="#5e140e"/><rect x="' + x + '" y="208" width="' + w + '" height="6" fill="#8a2a20"/>';
+  s += tray(76, 120) + tray(226, 110) + tray(366, 120);
+  for (let i=0;i<5;i++) s += '<ellipse cx="' + (92 + i*22) + '" cy="206" rx="9" ry="9" fill="none" stroke="' + GOLD.mid + '" stroke-width="3.5"/>';                // rings
+  for (let i=0;i<6;i++) s += '<ellipse cx="281" cy="' + (204 - i*5) + '" rx="34" ry="8" fill="none" stroke="' + (i % 2 ? GOLD.hi : GOLD.mid) + '" stroke-width="3"/>';    // bangle stack
+  s += '<path d="M380 180 Q426 236 472 180" fill="none" stroke="' + GOLD.mid + '" stroke-width="4" stroke-dasharray="1 7" stroke-linecap="round"/><circle cx="426" cy="214" r="7" fill="#b0362a" stroke="' + GOLD.deep + '" stroke-width="1.5"/>';   // necklace on bust
+  s += '<path d="M396 212 Q426 150 456 212" fill="var(--paper)" fill-opacity=".85" stroke="var(--ink)" stroke-opacity=".3"/>';
+  return s + '</svg>';
+}
+function showroomArt(){
+  return '<div class="art" aria-hidden="true"><div class="art-l" data-depth=".12" data-mouse="10">' + showroomBack() + '</div><div class="art-l" data-depth=".06" data-mouse="22">' + showroomMid() + '</div><div class="art-l" data-depth="0" data-mouse="34">' + showroomFront() + '</div></div>';
+}
+/* Small spot illustrations */
+function coinStackSvg(){
+  let s = '<svg viewBox="0 0 160 120" aria-hidden="true"><defs><linearGradient id="cs" x1="0" x2="1"><stop offset="0" stop-color="' + GOLD.lo + '"/><stop offset=".45" stop-color="' + GOLD.hi + '"/><stop offset="1" stop-color="' + GOLD.lo + '"/></linearGradient></defs>';
+  [[46,6],[104,4]].forEach(([x, n]) => { for (let i=0;i<n;i++){ const y = 104 - i*11; s += '<rect x="' + (x-28) + '" y="' + (y-6) + '" width="56" height="10" fill="url(#cs)"/><ellipse cx="' + x + '" cy="' + (y+4) + '" rx="28" ry="7" fill="' + GOLD.lo + '"/><ellipse cx="' + x + '" cy="' + (y-6) + '" rx="28" ry="7" fill="' + GOLD.hi + '" stroke="' + GOLD.lo + '"/>'; } });
+  return s + '<ellipse cx="46" cy="38" rx="14" ry="3" fill="none" stroke="' + GOLD.lo + '" stroke-opacity=".5"/></svg>';
+}
+function giftSvg(){
+  return '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="18" y="50" width="84" height="60" fill="var(--em)"/><rect x="12" y="38" width="96" height="16" fill="var(--em-2)"/><rect x="54" y="38" width="12" height="72" fill="' + GOLD.mid + '"/><path d="M60 38 C40 10 22 26 40 38 Z M60 38 C80 10 98 26 80 38 Z" fill="none" stroke="' + GOLD.mid + '" stroke-width="6" stroke-linejoin="round"/></svg>';
+}
+
+/* =========================================================
+   Session / routing
+   ========================================================= */
+let view = sessGet("sr-view") || "login";      // login | home | pw | admin | admpw
+let empKey = sessGet("sr-emp") || null;
+let authedKey = null, loginMode = "emp", actor = null;
+let tab = sessGet("sr-tab") || "feed", adminTab = sessGet("sr-atab") || "dash";
+let feedFilter = "all", feedLimit = 20, catFilter = "all", lbPeriod = "month", lbScope = "all", mineView = "received";
+let failCount = 0, lockUntil = 0;
+function me(){ return actor ? actor.key : null; }
+function isAdminActor(){ return actor && actor.kind === "admin"; }
+function myMgr(){ return actor && actor.kind === "emp" ? mgrOf(actor.key) : null; }
+function signOutAll(){ authedKey = null; empKey = null; sessSet("sr-emp", null); sessSet("sr-adm", null); }
+function go(v){ view = v; sessSet("sr-view", v); render(); window.scrollTo(0,0); }
+function setTab(t){ tab = t; sessSet("sr-tab", t); feedLimit = 20; render(); window.scrollTo(0,0); }
+function setAdminTab(t){ adminTab = t; sessSet("sr-atab", t); feedLimit = 20; render(); window.scrollTo(0,0); }
+
+function render(){
+  demoBar();
+  const app = $("#app");
+  if (mode === "loading"){ app.innerHTML = '<div class="gate"><section class="stage"><div class="stage-in"><div class="wm">' + wmText() + '</div><p class="lead">Loading…</p></div></section><section class="gate-form"></section></div>'; return; }
+  actor = null;
+  if ((view === "admin" || view === "admpw") && sessGet("sr-adm") === "1" && adminAuth()){
+    const subj = {key:ADM_KEY, rec:{id:adminId(), name:"HR Admin"}, home:"admin"};
+    if (credInfo(ADM_KEY).mustChange){
+      if (authedKey !== ADM_KEY){ signOutAll(); view = "login"; return renderLogin(); }
+      return renderChangePw(true, subj);
+    }
+    actor = {kind:"admin", key:"admin", rec:{id:adminId(), name:"HR Team"}};
+    if (view === "admpw") return renderChangePw(false, subj);
+    return renderAdmin();
+  }
+  if ((view === "home" || view === "pw") && empKey && master()[empKey]){
+    const rec = master()[empKey], info = credInfo(empKey);
+    actor = {kind:"emp", key:empKey, rec};
+    if (info.mustChange){
+      if (authedKey !== empKey){ signOutAll(); view = "login"; return renderLogin(); }
+      return renderChangePw(true, {key:empKey, rec, home:"home"});
+    }
+    if (view === "pw") return renderChangePw(false, {key:empKey, rec, home:"home"});
+    return renderHome();
+  }
+  view = "login"; renderLogin();
+}
+let deferred = false;
+function softRender(){
+  const a = document.activeElement;
+  if (a && a.closest && a.closest("#app") && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && view !== "login"){ deferred = true; return; }
+  const y = window.scrollY; render(); window.scrollTo(0, y);
+}
+document.addEventListener("focusout", () => { if (deferred){ setTimeout(() => { const a = document.activeElement; if (a && a.closest && a.closest("#app") && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) return; deferred = false; softRender(); }, 150); } });
+
+/* =========================================================
+   Parallax: layers carry data-depth (scroll) and data-mouse (pointer)
+   ========================================================= */
+const REDUCED = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+let parRAF = 0, pmx = 0, pmy = 0;
+function parTick(){
+  parRAF = 0; const y = window.scrollY;
+  $$("[data-depth]").forEach(el => { const d = +el.dataset.depth || 0, m = +el.dataset.mouse || 0; el.style.transform = "translate3d(" + (pmx*m).toFixed(1) + "px," + (y*d + pmy*m).toFixed(1) + "px,0)"; });
+}
+function parReq(){ if (!REDUCED && !parRAF) parRAF = requestAnimationFrame(parTick); }
+window.addEventListener("scroll", parReq, {passive:true});
+window.addEventListener("resize", parReq, {passive:true});
+document.addEventListener("pointermove", e => { if (e.pointerType !== "mouse") return; pmx = .5 - e.clientX / innerWidth; pmy = .5 - e.clientY / innerHeight; parReq(); }, {passive:true});
+
+/* =========================================================
+   Brand pieces: wordmark, hallmark stamps
+   ========================================================= */
+function wmText(){ return '<span class="wmt"><i>G</i><i>R</i>ea<i>T</i> Rewards</span>'; }
+function wordmark(){ return '<div class="wm" data-notr>' + wmText() + '<span class="hmk">R&amp;R</span></div>'; }
+let stampN = 0;
+function stampSvg(ring, center, size){
+  const id = "sp" + (stampN++), fs = size || 44;
+  return '<svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="' + id + '" d="M100,100 m-71,0 a71,71 0 1,1 142,0 a71,71 0 1,1 -142,0"/></defs>' +
+    '<circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="3.5"/><circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="100" cy="100" r="55" fill="none" stroke="currentColor" stroke-width="1.3"/>' +
+    '<text font-family="IBM Plex Mono, monospace" font-size="14.5" font-weight="600" letter-spacing="2.6" fill="currentColor"><textPath href="#' + id + '">' + esc(ring) + '</textPath></text>' +
+    '<text x="100" y="' + (100 + fs*.36).toFixed(0) + '" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="' + fs + '" fill="currentColor">' + esc(center) + '</text></svg>';
+}
+function hexStamp(center){
+  return '<svg viewBox="0 0 200 220" aria-hidden="true"><path d="M100 6 L192 58 L192 162 L100 214 L8 162 L8 58 Z" fill="none" stroke="currentColor" stroke-width="3.5"/><path d="M100 22 L178 66 L178 154 L100 198 L22 154 L22 66 Z" fill="none" stroke="currentColor" stroke-width="1.3"/>' +
+    '<text x="100" y="130" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="64" fill="currentColor">' + esc(center) + '</text></svg>';
+}
+function stampAt(html, css, depth, mouse){ return '<div class="layer" data-depth="' + depth + '" data-mouse="' + (mouse || 0) + '"><div class="stampbox" style="' + css + '">' + html + '</div></div>'; }
+/* Celebration moment: a hallmark stamp thuds onto the page */
+function confetti(center){
+  if (REDUCED) return;
+  const el = document.createElement("div"); el.className = "stamp-thud"; el.setAttribute("aria-hidden", "true");
+  el.innerHTML = stampSvg("GREAT REWARDS · RECOGNISED · GREAT WORK · ", center || "THANKS", 34);
+  document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
+}
+
+/* Shell: ink top bar + parallax masthead */
+const MAST_WORDS = ["Thank you", "நன்றி", "धन्यवाद", "ధన్యవాదాలు", "ಧನ್ಯವಾದ"];
+function shellHtml(o){
+  const deco = o.art
+    ? ''
+    : stampAt(stampSvg("GREAT REWARDS · HALLMARKED · GRT · ", o.stamp || "916"), "right:7%;top:16%;width:clamp(96px,13vw,170px);transform:rotate(-14deg)", .22, 0) +
+      stampAt(hexStamp(o.hex || "R&R"), "right:22%;bottom:-30px;width:clamp(60px,7vw,96px);transform:rotate(8deg);opacity:.7", .5, 0);
+  const inner = o.art
+    ? '<div class="mast-in two"><div><div class="eyebrow">' + o.eyebrow + '</div><h1>' + o.title + '</h1>' + o.strip + '<div class="actions" style="margin-top:16px">' + (o.actions || '') + '</div></div>' + o.art + '</div>'
+    : '<div class="mast-in" data-depth="-.06"><div><div class="eyebrow">' + o.eyebrow + '</div><h1>' + o.title + '</h1>' + o.strip + '</div><div class="mast-act">' + (o.actions || '') + '</div></div>';
+  return '<header class="bar"><div class="bar-in">' + wordmark() +
+      '<nav class="nav" role="tablist">' + o.nav.map(t => '<button type="button" role="tab" data-act="' + o.act + '" data-v="' + t.k + '" aria-selected="' + (t.k === o.cur) + '">' + t.l + (t.n ? '<span class="tabcount">' + t.n + '</span>' : '') + '</button>').join("") + '</nav>' +
+      '<div class="bar-r">' + langSelHtml() + '<button class="btn" data-act="chpw" title="Change password">Password</button><button class="btn" data-act="signout">Sign out</button></div></div></header>' +
+    '<section class="mast' + (o.art ? ' home' : '') + '">' +
+      '<div class="layer words" data-depth=".38" aria-hidden="true">' + o.words.map(w => '<span>' + esc(w) + '</span>').join("") + '</div>' + deco + inner +
+    '</section><main class="page" id="pane"></main>';
+}
+function hmStrip(cells){ return '<div class="hm">' + cells.map(c => '<div class="hm-c' + (c.cls ? ' ' + c.cls : '') + '"><small>' + c.l + '</small><b>' + c.v + '</b></div>').join("") + '</div>'; }
+function tabsHtml(list, cur, act){ return '<nav class="nav" role="tablist">' + list.map(t => '<button type="button" role="tab" data-act="' + act + '" data-v="' + t.k + '" aria-selected="' + (t.k === cur) + '">' + t.l + '</button>').join("") + '</nav>'; }
+function chipsHtml(list, cur, act){ return '<div class="chipset">' + list.map(c => '<button type="button" data-act="' + act + '" data-v="' + c.k + '" aria-pressed="' + (c.k === cur) + '">' + c.l + '</button>').join("") + '</div>'; }
+function emptyHtml(e, title, sub){ return '<div class="empty-s"><span class="ee">—</span><b>' + title + '</b>' + (sub ? '<p class="sub" style="margin:4px auto 0;max-width:46ch">' + sub + '</p>' : '') + '</div>'; }
+function startMotto(){ parReq(); }
+
+/* =========================================================
+   Sign-in gate
+   ========================================================= */
+const TRIAL = [["Showroom Manager, T NAGAR (Sample)", "D1001", "1001"], ["Regional Manager, all showrooms", "D1060", "1060"], ["Employee (D1002 to D1059)", "D1002", "1002"]];
+function renderLogin(){
+  const hasStaff = staffList().length > 0, sample = !!docs["config/sample"];
+  const recent = recs().filter(r => isLive(r) && (r.kind === "peer" || r.kind === "spot")).sort((a,b) => b.ts - a.ts).slice(0, 3);
+  $("#app").innerHTML = '<div class="gate">' +
+    '<section class="stage">' +
+      '<div class="layer grid" data-depth=".05" data-mouse="8"></div>' +
+      '<div class="layer words" data-depth=".22" data-mouse="22" aria-hidden="true"><span>Nandri</span><span>Dhanyavaad</span><span>Thank you</span><span>Dhanyavaada</span></div>' +
+      stampAt(stampSvg("GREAT REWARDS · HALLMARKED · GRT · ", "916"), "right:5%;bottom:16%;width:clamp(110px,13vw,190px);transform:rotate(-14deg)", .32, 42) +
+      stampAt(stampSvg("RECOGNISE · REWARD · CELEBRATE · ", "22K", 50), "left:46%;top:9%;width:clamp(76px,8vw,120px);transform:rotate(11deg);opacity:.7", .45, 60) +
+      '<div class="layer" data-depth=".1" data-mouse="30"><div class="neck">' + necklaceSvg() + '</div></div>' +
+      stampAt(hexStamp("TY"), "left:50%;top:58%;width:clamp(56px,6vw,90px);transform:rotate(-6deg);opacity:.6", .6, 80) +
+      '<div class="stage-in" data-mouse="6"><div class="wm">' + wmText() + '</div>' +
+        '<div><h1>Good work, <i>hallmarked.</i></h1><p class="lead">Thank a colleague for something specific, earn points when your work stands out, and turn them into rewards. One place for every GRT showroom.</p></div>' +
+        (recent.length ? '<div class="ticker">' + recent.map(r => { const v = valueOf(r.value); return '<div><span class="c">' + esc(valueCode(v)) + '</span><span><b>' + esc(nameOf(r.from)) + '</b> → <b>' + esc((r.to||[]).map(nameOf).join(", ")) + '</b> · ' + esc(v.name) + '</span></div>'; }).join("") + '</div>' : '') +
+      '</div></section>' +
+    '<section class="gate-form"><div class="langrow">' + langSelHtml() + '</div>' +
+      '<h2>Sign in</h2>' +
+      (mode === "local" ? '<div class="banner">Shared saving isn\'t available in this view, so changes stay in this browser only.</div>' : '') +
+      '<form class="card-form" id="loginForm" autocomplete="off">' +
+        '<div class="seg" role="group" aria-label="Login type">' + [["emp","Employee"],["mgr","Manager"],["admin","Admin"]].map(x => '<button type="button" data-lm="' + x[0] + '" class="' + (loginMode === x[0] ? "sel" : "") + '" aria-pressed="' + (loginMode === x[0]) + '">' + x[1] + '</button>').join("") + '</div>' +
+        (loginMode === "admin" && !adminAuth()
+          ? (isOwnerEditor
+              ? '<p class="sub" style="margin:0 0 14px">Set the password for admin login ID <b>' + ADMIN_ID + '</b>.</p><div class="field"><label for="setPw1">New admin password</label><input id="setPw1" type="password" autocomplete="new-password" maxlength="40"></div><div class="field"><label for="setPw2">Type it again</label><input id="setPw2" type="password" autocomplete="new-password" maxlength="40"></div><p class="err" id="liErr"></p><button class="btn primary" type="submit">Save admin password</button>'
+              : '<p class="sub" style="margin:0">Admin login hasn\'t been set up yet. Ask the owner of GReaT Rewards to set it up.</p>')
+          : '<div class="field"><label for="liId">' + (loginMode === "admin" ? "Admin ID" : "Employee ID") + '</label><input id="liId" required autocomplete="username"></div>' +
+            '<div class="field"><label for="liPin">Password</label><input id="liPin" type="password" required autocomplete="current-password" maxlength="40"></div>' +
+            '<p class="err" id="liErr"></p><button class="btn primary" type="submit"' + (hasStaff || loginMode === "admin" ? '' : ' disabled') + '>Sign in</button>' +
+            (loginMode === "admin" ? (isOwnerEditor ? '<p class="hint" style="margin:12px 0 0">Forgot the admin password? <button type="button" class="btn link" id="admReset">Reset it</button> (owner and editors only).</p>' : '') :
+              '<p class="hint" style="margin:12px 0 0">' + (hasStaff ? (loginMode === "mgr" ? 'Managers, HODs and supervisors sign in with their employee ID.' : 'Your first password is the last 4 digits of your employee ID.') + ' You\'ll choose your own password right after signing in. Forgot it? Ask HR to reset it.' : 'No staff list has been uploaded yet.') + '</p>')) +
+      '</form>' +
+      (sample ? '<div class="trial"><h3>Trial logins</h3><div class="tbl-wrap"><table><thead><tr><th>Role</th><th>ID</th><th>Base password</th></tr></thead><tbody>' + TRIAL.map(t => '<tr><td>' + t[0] + '</td><td><b>' + t[1] + '</b></td><td><b>' + t[2] + '</b></td></tr>').join("") + '</tbody></table></div><p class="sub" style="margin:6px 0 0;font-size:12px">Sample people for trying the app. Real staff sign in with their own employee ID. Everyone sets a new password at first sign-in.</p></div>' : '') +
+      '<button type="button" class="btn ghost" id="installHelp" style="align-self:flex-start">Use it on your phone</button>' +
+    '</section></div>';
+  parReq();
+  $("#installHelp").onclick = () => askDialog('<h2>Use it like an app</h2><p class="sub" style="margin:0 0 12px">Open this same link on your phone, then add it to your home screen. It opens in one tap, full screen.</p>' +
+    '<ol style="padding-left:18px;margin:0 0 8px;display:grid;gap:10px"><li><b>Android (Chrome):</b> tap the ⋮ menu, then <b>Add to Home screen</b>.</li><li><b>iPhone (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>.</li><li><b>Computer:</b> bookmark the link. The layout adjusts to any screen.</li></ol><div class="dlg-foot"><button type="button" class="btn primary" data-a="ok">Got it</button></div>',
+    (d, finish) => { d.querySelector('[data-a="ok"]').onclick = () => finish(true); });
+  const ar = $("#admReset"); if (ar) ar.onclick = async () => {
+    const a = await askInput("Reset admin password", "New admin password (at least 6 characters, with a letter and a number)"); if (!a) return;
+    const prob = pwProblem(a, {id:ADMIN_ID}); if (prob){ toast(prob); return; }
+    if (await askInput("Reset admin password", "Type the new admin password again") !== a){ toast("The two passwords don't match"); return; }
+    try { await writeDocStrict(ADM_PATH, Object.assign({id:adminId()}, await makeCred(ADM_KEY, a, "self"))); toast("Admin password reset"); } catch(ex){ toast("Couldn't reset: " + errText(ex)); }
+  };
+  $$("[data-lm]").forEach(b => b.onclick = () => { loginMode = b.dataset.lm; renderLogin(); const f = $("#liId"); if (f) f.focus(); });
+  $("#loginForm").onsubmit = async e => {
+    e.preventDefault();
+    const err = $("#liErr");
+    if (loginMode === "admin" && !adminAuth()){
+      const a = $("#setPw1").value, b = $("#setPw2").value, prob = pwProblem(a, {id:ADMIN_ID});
+      if (prob){ err.textContent = prob; return; } if (a !== b){ err.textContent = "The two passwords don't match."; return; }
+      try { await writeDocStrict(ADM_PATH, Object.assign({id:ADMIN_ID}, await makeCred(ADM_KEY, a, "self"))); toast("Admin password saved. Sign in with ID " + ADMIN_ID); renderLogin(); } catch(ex){ err.textContent = "Couldn't save: " + errText(ex); }
+      return;
+    }
+    if (Date.now() < lockUntil){ err.textContent = "Too many attempts. Wait 30 seconds and try again."; return; }
+    const id = $("#liId").value.trim(), pin = $("#liPin").value;
+    const fail = msg => { failCount++; if (failCount >= 5){ lockUntil = Date.now() + 30000; failCount = 0; } err.textContent = msg; translateTree(err); };
+    if (loginMode === "admin"){
+      const ok = id === adminId() && await verifyPw(ADM_KEY, {id}, pin);
+      if (!ok) return fail("That admin ID and password don't match.");
+      failCount = 0; signOutAll(); authedKey = ADM_KEY; sessSet("sr-adm", "1"); go("admin"); return;
+    }
+    const key = keyOf(id), rec = master()[key];
+    const ok = !!rec && await verifyPw(key, rec, pin);
+    if (!ok) return fail("That ID and password don't match. Check both and try again.");
+    if (loginMode === "mgr" && !mgrOf(key)) return fail("This ID doesn't have manager access. Sign in as Employee, or ask HR to add you as a manager.");
+    failCount = 0; signOutAll(); authedKey = key; empKey = key; sessSet("sr-emp", key);
+    tab = loginMode === "mgr" ? "team" : "feed"; sessSet("sr-tab", tab); go("home");
+  };
+}
+
+/* =========================================================
+   Change password (forced at first sign-in for every role)
+   ========================================================= */
+function renderChangePw(forced, subj){
+  const key = subj.key, emp = subj.rec, info = credInfo(key);
+  $("#app").innerHTML = '<div class="gate"><section class="stage">' +
+      '<div class="layer grid" data-depth=".05" data-mouse="8"></div>' +
+      stampAt(stampSvg("YOUR KEY · YOUR POINTS · YOUR NAME · ", "NEW", 50), "right:12%;top:18%;width:clamp(120px,15vw,210px);transform:rotate(-12deg)", .3, 40) +
+      '<div class="stage-in"><div class="wm">' + wmText() + '</div><div><h1>' + (forced ? 'Make it <i>yours.</i>' : 'New <i>password.</i>') + '</h1><p class="lead">' + (forced ? 'Welcome, ' + esc(emp.name) + '. Replace the base password with one only you know. You will use it every time you sign in.' : 'Signed in as ' + esc(emp.name) + ' (' + esc(emp.id) + ').') + '</p></div><div></div></div></section>' +
+    '<section class="gate-form"><div class="langrow">' + langSelHtml() + '</div><h2>' + (forced ? 'Choose your password' : 'Change password') + '</h2>' +
+      (forced && info.kind === "admintemp" && key !== ADM_KEY ? '<div class="banner">HR reset your password. Choose a new one to continue.</div>' : '') +
+      '<form class="card-form" id="pwForm" autocomplete="off">' +
+        (forced ? '' : '<div class="field"><label for="pwOld">Current password</label><input id="pwOld" type="password" required autocomplete="current-password" maxlength="40"></div>') +
+        '<div class="field"><label for="pwNew">New password</label><input id="pwNew" type="password" required autocomplete="new-password" maxlength="40"></div>' +
+        '<div class="field"><label for="pwNew2">Type it again</label><input id="pwNew2" type="password" required autocomplete="new-password" maxlength="40"></div>' +
+        '<p class="hint" style="margin:-4px 0 10px">At least 6 characters, with at least one letter and one number.</p><p class="err" id="pwErr"></p>' +
+        '<button class="btn primary" type="submit">Save password</button><button class="btn ghost" type="button" id="pwCancel" style="margin-top:10px;width:100%">' + (forced ? 'Sign out' : 'Cancel') + '</button>' +
+      '</form></section></div>';
+  parReq();
+  $("#pwCancel").onclick = () => { if (forced){ signOutAll(); go("login"); } else go(subj.home); };
+  $("#pwForm").onsubmit = async e => {
+    e.preventDefault();
+    const err = $("#pwErr"), a = $("#pwNew").value, b = $("#pwNew2").value;
+    const say = m => { err.textContent = m; translateTree(err); };
+    if (!forced && !(await verifyPw(key, emp, $("#pwOld").value))) return say("Your current password isn't right.");
+    const prob = pwProblem(a, emp); if (prob) return say(prob);
+    if (a !== b) return say("The two passwords don't match.");
+    if (await verifyPw(key, emp, a)) return say("Choose a password different from your current one.");
+    try {
+      const c = await makeCred(key, a, "self");
+      await writeDocStrict(key === ADM_KEY ? ADM_PATH : "pins/" + key, key === ADM_KEY ? Object.assign({id:adminId()}, c) : c);
+      toast("Password changed"); go(subj.home);
+    } catch(ex){ say("Couldn't save: " + errText(ex)); }
+  };
+}
+
+/* =========================================================
+   Employee and manager home
+   ========================================================= */
+function renderHome(){
+  const k = actor.key, rec = actor.rec, s = settings(), w = walletOf(k), mg = myMgr();
+  const yr = periodRange("year")[0], rcvYear = received(k).filter(r => r.ts >= yr).length;
+  const left = Math.max(0, s.peerAllowance - peerUsed(k));
+  const cells = [{l:"Emp ID", v:esc(rec.id), cls:"id"}, {l:"Points balance", v:nf(w.bal), cls:"hot"}, {l:"Worth", v:"₹" + nf(w.bal * s.rupeePerPt)}, {l:"This year", v:String(rcvYear)}, {l:"Left to give", v:nf(left)}];
+  if (mg) cells.push({l:"Award budget left", v:nf(Math.max(0, mg.budget - budgetUsed(k)))});
+  const nav = [{k:"feed", l:"Wall"}, {k:"rewards", l:"Rewards"}, {k:"mine", l:"My recognition"}, {k:"leaders", l:"Leaderboard"}];
+  if (mg) nav.splice(1, 0, {k:"team", l:"My team"});
+  if (!nav.some(t => t.k === tab)) tab = "feed";
+  const parts = rec.name.split(" ");
+  $("#app").innerHTML = shellHtml({nav, cur:tab, act:"tab", words:MAST_WORDS.slice(0, 3),
+    eyebrow: 'Namaskaram · ' + esc([rec.designation, rec.showroom].filter(Boolean).join(" · ")),
+    title: esc(parts[0]) + (parts.length > 1 ? '<br><span class="amp">' + esc(parts.slice(1).join(" ")) + '</span>' : ''),
+    strip: hmStrip(cells), art: showroomArt(),
+    actions: '<button class="btn primary" data-act="recog">Recognise someone</button>' + (mg ? '<button class="btn gold" data-act="recog" data-kind="spot">Give a spot award</button>' : '<button class="btn" data-act="tab" data-v="rewards">Redeem points</button>')});
+  const pane = $("#pane");
+  if (tab === "team") pane.innerHTML = teamHtml();
+  else if (tab === "rewards") pane.innerHTML = rewardsHtml();
+  else if (tab === "mine") pane.innerHTML = mineHtml();
+  else if (tab === "leaders") pane.innerHTML = leadersHtml();
+  else pane.innerHTML = feedTabHtml();
+  parReq();
+}
+function topValue(k){ const c = {}; received(k).forEach(r => { c[r.value] = (c[r.value] || 0) + 1; }); let best = null; Object.keys(c).forEach(v => { if (!best || c[v] > c[best]) best = v; }); return best; }
+
+/* ----- Wall ----- */
+function feedTabHtml(){
+  const k = me(), rec = actor.rec, w = walletOf(k);
+  let list = recs().filter(r => r.kind !== "boost" && (isLive(r) || r.from === k)).sort((a,b) => b.ts - a.ts);
+  if (feedFilter === "showroom") list = list.filter(r => (r.to || []).some(t => (master()[t] || {}).showroom === rec.showroom));
+  if (feedFilter === "me") list = list.filter(r => r.from === k || (r.to || []).indexOf(k) >= 0);
+  const cel = celebrations(new Date(), 10).sort((a,b) => (a.r.showroom === rec.showroom ? 0 : 1) - (b.r.showroom === rec.showroom ? 0 : 1) || a.days - b.days).slice(0, 6).sort((a,b) => a.days - b.days);
+  const top = leaderStats(periodRange("month")[0], Date.now()).rcv.slice(0, 5);
+  const wk = Date.now() - 7*DAY, pool = recs().filter(r => isLive(r) && (r.kind === "peer" || r.kind === "spot") && r.msg);
+  const spot = pool.filter(r => r.ts >= wk).sort((a,b) => reactsOf(b.id).length - reactsOf(a.id).length || b.ts - a.ts)[0] || pool.sort((a,b) => b.ts - a.ts)[0];
+  return '<div class="cols"><div>' + (spot && feedFilter === "all" ? spotlightHtml(spot) : '') +
+      '<div class="feedbar"><h2>Recognition wall</h2>' + chipsHtml([{k:"all", l:"Everyone"}, {k:"showroom", l:"My showroom"}, {k:"me", l:"Involving me"}], feedFilter, "feedf") + '</div>' + feedListHtml(list) +
+    '</div><aside class="rail">' +
+      '<section class="panel"><h2>Your wallet</h2><div class="rankbig"><span class="n" style="color:var(--brass)">' + nf(w.bal) + '</span><span class="sub">pts</span></div><div class="mini-kpi"><span><b>' + nf(w.earned) + '</b> <span>earned</span></span><span><b>' + nf(w.spent) + '</b> <span>redeemed</span></span></div><div class="actions" style="margin-top:12px"><button class="btn small" data-act="tab" data-v="rewards">Redeem points</button></div></section>' +
+      '<section class="panel"><h2>Coming up</h2>' + (cel.length ? datesHtml(cel) : emptyHtml("", "No birthdays or anniversaries in the next 10 days", "")) + '</section>' +
+      '<section class="panel"><h2>Most recognised this month</h2>' + (top.length ? '<ol class="mini">' + top.map((x, i) => { const m = master()[x.k]; return '<li><span><span class="rk">' + (i+1) + '</span>' + esc(m.name) + ' <span class="dept">' + esc(m.showroom) + '</span></span><b>' + x.n + '</b></li>'; }).join("") + '</ol>' : emptyHtml("", "Nothing yet this month", "")) + '</section>' +
+    '</aside></div>';
+}
+function spotlightHtml(r){
+  const v = valueOf(r.value), n = reactsOf(r.id).length;
+  return '<section class="spot" style="--vc:' + esc(v.c) + '"><div class="spot-txt"><div class="eyebrow">Spotlight of the week</div><p class="q">“' + esc(r.msg) + '”</p>' +
+    '<div class="spot-by"><b>' + esc((r.to||[]).map(nameOf).join(", ")) + '</b> <span>for</span> ' + esc(v.name) + '<br><span class="sub2"><span>from</span> ' + esc(nameOf(r.from)) + ' · ' + ago(r.ts) + (n ? ' · ' + n + ' <span>reactions</span>' : '') + '</span></div>' +
+    '<div class="actions" style="margin-top:14px"><button class="btn small gold" data-act="react" data-id="' + esc(r.id) + '" data-e="👏">👏 <span>Applaud</span></button><button class="btn small" data-act="cmts" data-id="' + esc(r.id) + '">Comment</button></div></div>' +
+    '<div class="spot-art" aria-hidden="true"><div class="neck-sm">' + necklaceSvg() + '</div><span class="code" data-notr>' + esc(valueCode(v)) + '</span></div></section>';
+}
+function datesHtml(list){
+  const MS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return '<ul class="dates">' + list.map(c => { const d = new Date(c.date + "T12:00:00"), self = c.r.key === me();
+    return '<li><span class="dbox ' + (c.type === "birthday" ? "bd" : "an") + '"><b>' + pad(d.getDate()) + '</b><small>' + MS[d.getMonth()] + '</small></span><div><div class="nm">' + esc(c.r.name) + '</div><div class="ds">' + (c.type === "birthday" ? '<span>Birthday</span>' : c.years + ' <span>' + (c.years === 1 ? "year with us" : "years with us") + '</span>') + ' · ' + (c.days === 0 ? '<span>Today</span>' : c.days === 1 ? '<span>Tomorrow</span>' : esc(c.r.showroom)) + '</div></div>' +
+      (self || !actor ? '' : '<button class="btn small" data-act="wish" data-k="' + esc(c.r.key) + '">Wish</button>') + '</li>'; }).join("") + '</ul>';
+}
+function celebHtml(c){ return datesHtml([c]); }
+function feedListHtml(list){
+  if (!list.length) return '<div class="panel">' + emptyHtml("", "No recognition here yet", "Be the first: tap Recognise someone and thank a colleague for something specific they did.") + '</div>';
+  return list.slice(0, feedLimit).map(recCard).join("") + (list.length > feedLimit ? '<div class="more"><button class="btn" data-act="more">Show more (' + (list.length - feedLimit) + ')</button></div>' : '');
+}
+function namesHtml(keys){
+  const n = keys.map(k => '<b>' + esc(nameOf(k)) + '</b>');
+  if (n.length <= 3) return n.join(", ");
+  return n.slice(0, 2).join(", ") + ' <span>and</span> ' + (n.length - 2) + ' <span>others</span>';
+}
+function recCard(r){
+  const v = valueOf(r.value), to = r.to || [], k = me();
+  let head, code = valueCode(v), vname = v.name, vc = v.c;
+  if (r.kind === "milestone"){ head = namesHtml(to) + ' <span>completed</span> <b>' + esc(r.years) + '</b> <span>' + (r.years === 1 ? "year with us" : "years with us") + '</span>'; code = r.years + "Y"; vname = "Work anniversary"; vc = "#0d5a44"; }
+  else if (r.kind === "birthday"){ head = '<span>Happy birthday</span>, ' + namesHtml(to) + '!'; code = "HB"; vname = "Birthday"; vc = "#9b7217"; }
+  else head = '<b>' + esc(nameOf(r.from)) + '</b> <span>' + (r.kind === "spot" ? "gave a spot award to" : "appreciated") + '</span> ' + namesHtml(to);
+  const reacts = reactsOf(r.id), mine = reacts.find(x => x.k === k), cm = cmtsOf(r.id).length, boosts = boostsOf(r.id);
+  const boostPts = boosts.filter(isLive).reduce((a, b) => a + (+b.pts || 0), 0);
+  const mg = myMgr(), canBoost = (mg || isAdminActor()) && isLive(r) && r.from !== k && to.indexOf(k) < 0;
+  const share = "https://wa.me/?text=" + encodeURIComponent(to.map(nameOf).join(", ") + " was recognised for " + v.name + " on GReaT Rewards" + (r.msg ? ": \"" + r.msg.slice(0, 200) + "\"" : ""));
+  return '<article class="ticket' + (r.status === "pending" ? ' pending' : '') + '" style="--vc:' + esc(vc) + '">' +
+    '<div class="stub"><span class="code" data-notr>' + esc(code) + '</span><span class="vname">' + esc(vname) + '</span>' + (+r.pts ? '<span class="spts">+' + nf(r.pts) + '</span>' : '') + '</div>' +
+    '<div class="tbody"><div class="thead">' + head + '</div>' +
+      '<div class="tmeta"><span>' + ago(r.ts) + '</span><span class="k">' + KIND[r.kind] + '</span>' + (to.length === 1 ? '<span>' + esc((master()[to[0]] || {}).showroom || "") + '</span>' : '') + (+r.pts && to.length > 1 ? '<span>+' + nf(r.pts) + ' <span>pts each</span></span>' : '') +
+        (r.status === "pending" ? '<span class="st-pill st-pending">Waiting for HR approval</span>' : '') + '</div>' +
+      (r.msg ? '<p class="rmsg">' + esc(r.msg) + '</p>' : '') +
+      (boosts.length ? '<div class="boosts"><span>Boosted by</span> ' + boosts.map(b => esc(nameOf(b.from))).join(", ") + (boostPts ? ' · +' + nf(boostPts) + ' pts' : '') + (boosts.some(b => b.status === "pending") ? ' · <span>boost waiting for approval</span>' : '') + '</div>' : '') +
+      '<div class="racts">' + REACTS.map(e => { const n = reacts.filter(x => x.e === e).length; return '<button class="rx' + (mine && mine.e === e ? ' on' : '') + '" data-act="react" data-id="' + esc(r.id) + '" data-e="' + e + '" aria-label="React ' + e + '">' + e + (n ? ' <small>' + n + '</small>' : '') + '</button>'; }).join("") +
+        '<span class="sp"></span><button class="rlink" data-act="cmts" data-id="' + esc(r.id) + '">' + (cm ? cm + ' ' : '') + '<span>' + (cm === 1 ? "comment" : "comments") + '</span></button>' +
+        (canBoost ? '<button class="rlink" data-act="boost" data-id="' + esc(r.id) + '">Boost</button>' : '') +
+        (downloads ? '<button class="rlink" data-act="card" data-id="' + esc(r.id) + '">Card</button>' : '') +
+        '<a class="rlink" href="' + share + '" target="_blank" rel="noopener">WhatsApp</a>' +
+        (isAdminActor() ? '<button class="rlink" data-act="delrec" data-id="' + esc(r.id) + '">Remove</button>' : '') +
+    '</div></div></article>';
+}
+
+/* ----- My team (managers) ----- */
+function teamHtml(){
+  const k = me(), mg = myMgr(), team = teamOf(k), s = settings();
+  const used = budgetUsed(k), now = Date.now();
+  const rows = team.map(r => { const lr = lastRecognised(r.key); return {r, lr, gap: lr ? Math.floor((now - lr)/DAY) : null}; });
+  const covered = rows.filter(x => x.gap != null && x.gap <= 30).length;
+  const nudges = rows.filter(x => x.gap == null || x.gap > 30).sort((a,b) => (b.gap == null ? 1e9 : b.gap) - (a.gap == null ? 1e9 : a.gap));
+  const mineMonth = given(k).filter(r => monthOf(r.ts) === curMonth());
+  const cel = celebrations(new Date(), 14, r => team.some(t => t.key === r.key));
+  const scope = mg.showrooms.indexOf("all") >= 0 ? "All showrooms" : mg.showrooms.join(", ");
+  return '<div class="cols"><div>' +
+    '<section class="panel"><div class="sec-h"><h2>Waiting for a thank-you</h2><span class="sub">' + nudges.length + ' <span>of</span> ' + team.length + '</span></div><p class="sub" style="margin:-4px 0 6px">Team members with no recognition in the last 30 days, longest wait first.</p>' +
+      (nudges.length ? nudges.slice(0, 12).map(x => '<div class="nudge"><div class="who">' + avatar(x.r.name, true) + '<div><b>' + esc(x.r.name) + '</b><small>' + esc([x.r.designation, x.r.showroom].filter(Boolean).join(" · ")) + '</small></div></div><div class="actions"><span class="gap">' + (x.gap == null ? '<span>Never recognised</span>' : x.gap + ' <span>days</span>') + '</span><button class="btn small primary" data-act="recog" data-k="' + esc(x.r.key) + '">Recognise</button></div></div>').join("") +
+        (nudges.length > 12 ? '<p class="hint" style="margin:10px 0 0">' + (nudges.length - 12) + ' more people are waiting.</p>' : '')
+        : emptyHtml("", "Everyone in your team was recognised in the last 30 days", "Keep it going.")) + '</section>' +
+    '<section class="panel"><div class="sec-h"><h2>Your awards this month</h2><span class="sub">' + esc(mLabel(curMonth())) + '</span></div>' + (mineMonth.length ? '<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>To</th><th>Value</th><th>Type</th><th class="num">Points</th><th>Status</th></tr></thead><tbody>' +
+      mineMonth.map(r => '<tr><td>' + fmtT(r.ts) + '</td><td>' + esc((r.to||[]).map(nameOf).join(", ")) + '</td><td>' + esc(valueOf(r.value).name) + '</td><td>' + KIND[r.kind] + '</td><td class="num">' + nf((+r.pts||0) * (r.to||[]).length) + '</td><td>' + statusPill(r.status || "approved") + '</td></tr>').join("") + '</tbody></table></div>'
+      : emptyHtml("", "You haven't recognised anyone this month", "Pick someone from the list above.")) + '</section>' +
+    '</div><aside class="rail">' +
+      '<section class="panel"><h2>Award budget</h2><p class="sub" style="margin:0">' + esc(mLabel(curMonth())) + ' · ' + esc(scope) + '</p><div class="meterbar"><i style="width:' + Math.min(100, pct(used, mg.budget)) + '%"></i></div>' +
+        '<div class="mini-kpi"><span><b>' + nf(used) + '</b> <span>used</span></span><span><b>' + nf(Math.max(0, mg.budget - used)) + '</b> <span>left</span></span><span><b>' + nf(mg.budget) + '</b> <span>budget</span></span></div>' +
+        '<p class="hint" style="margin:10px 0 0">Spot awards above ' + nf(s.approvalAbove) + ' pts per person go to HR for approval.</p></section>' +
+      '<section class="panel"><h2>Team coverage</h2><p class="sub" style="margin:0">Recognised in the last 30 days</p><div class="rankbig"><span class="n">' + pct(covered, team.length) + '%</span><span class="sub"><b>' + covered + '</b> <span>of</span> <b>' + team.length + '</b></span></div><div class="mini-kpi"><span><b>' + mineMonth.length + '</b> <span>given by you this month</span></span></div></section>' +
+      '<section class="panel"><h2>Coming up</h2>' + (cel.length ? datesHtml(cel) : emptyHtml("", "No team celebrations in the next 14 days", "")) + '</section>' +
+    '</aside></div>';
+}
+function statusPill(s){ const L = {pending:"Pending", approved:"Approved", fulfilled:"Issued", rejected:"Declined"}; return '<span class="st-pill st-' + s + '">' + (L[s] || s) + '</span>'; }
+
+/* ----- Rewards ----- */
+function rewardsHtml(){
+  const k = me(), s = settings(), w = walletOf(k), items = catalog().filter(i => i.on !== false);
+  const cats = Array.from(new Set(items.map(i => i.cat)));
+  const shown = catFilter === "all" ? items : items.filter(i => i.cat === catFilter);
+  const mineR = redeems().filter(x => x.key === k).sort((a,b) => b.ts - a.ts);
+  return '<div class="wallet"><div class="wbox main"><div class="wart">' + coinStackSvg() + '</div><span>Points balance</span><b>' + nf(w.bal) + '</b><span>≈ ₹' + nf(w.bal * s.rupeePerPt) + '</span></div>' +
+      '<div class="wbox"><span>Earned, all time</span><b>' + nf(w.earned) + '</b></div><div class="wbox"><span>Redeemed</span><b>' + nf(w.spent) + '</b></div></div>' +
+    '<div class="feedbar"><h2>Rewards catalogue</h2>' + chipsHtml([{k:"all", l:"All"}].concat(cats.map(c => ({k:c, l:c}))), catFilter, "catf") + '</div>' +
+    '<div class="catgrid" style="margin-bottom:28px">' + shown.map(i => { const can = w.bal >= i.pts; return '<div class="item"><span class="ie" aria-hidden="true">' + esc(i.e) + '</span><span class="ic">' + esc(i.cat) + '</span><b>' + esc(i.name) + '</b><span class="ip">' + nf(i.pts) + ' pts</span>' +
+      (can ? '<button class="btn primary small" data-act="redeem" data-id="' + esc(i.id) + '">Redeem</button>' : '<div class="prog"><i style="width:' + Math.min(100, pct(Math.max(0, w.bal), i.pts)) + '%"></i></div><span class="need">' + nf(i.pts - w.bal) + ' <span>more points needed</span></span>') + '</div>'; }).join("") + '</div>' +
+    '<section class="panel"><div class="sec-h"><h2>My redemptions</h2></div>' + (mineR.length ? '<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Reward</th><th class="num">Points</th><th>Status</th></tr></thead><tbody>' +
+      mineR.map(x => '<tr><td>' + fmtT(x.ts) + '</td><td>' + esc(x.name) + '</td><td class="num">' + nf(x.pts) + '</td><td>' + statusPill(x.status) + (x.note ? ' <span class="sub">' + esc(x.note) + '</span>' : '') + '</td></tr>').join("") + '</tbody></table></div>'
+      : '<div class="empty-s"><div style="width:90px;margin:0 auto 8px">' + giftSvg() + '</div><b>No redemptions yet</b><p class="sub" style="margin:4px auto 0;max-width:46ch">When you redeem a reward, HR gets a request and you can follow its status here.</p></div>') + '</section>';
+}
+
+/* ----- My recognition ----- */
+function mineHtml(){
+  const k = me(), rcv = received(k), giv = given(k), w = walletOf(k);
+  const counts = {}; rcv.forEach(r => { counts[r.value] = (counts[r.value] || 0) + 1; });
+  const list = mineView === "given" ? giv : rcv;
+  return '<section class="panel"><div class="sec-h"><h2>My badges</h2><div class="mini-kpi" style="margin:0"><span><b>' + rcv.length + '</b> <span>received</span></span><span><b>' + giv.length + '</b> <span>given</span></span><span><b>' + nf(w.earned) + '</b> <span>points earned</span></span></div></div>' +
+      '<div class="bcoll">' + allValues().map(v => '<div class="bt' + (counts[v.k] ? '' : ' zero') + '" style="--vc:' + esc(v.c) + '"><div class="hex" data-notr>' + esc(valueCode(v)) + '</div><b>' + esc(v.name) + '</b><span class="bn">× ' + (counts[v.k] || 0) + '</span></div>').join("") + '</div></section>' +
+    '<div class="feedbar"><h2>' + (mineView === "given" ? "Recognition I gave" : "Recognition I received") + '</h2>' + chipsHtml([{k:"received", l:"Received"}, {k:"given", l:"Given"}], mineView, "minev") + '</div>' + feedListHtml(list);
+}
+
+/* ----- Leaderboard ----- */
+function leaderStats(from, to, filter){
+  const rcv = {}, giv = {};
+  recs().forEach(r => {
+    if (r.kind === "boost" || !isLive(r) || r.ts < from || r.ts > to) return;
+    (r.to || []).forEach(t => { const m = master()[t]; if (!m || (filter && !filter(m))) return; const o = rcv[t] = rcv[t] || {n:0, p:0}; o.n++; o.p += +r.pts || 0; });
+    if (r.kind === "peer" || r.kind === "spot"){ const m = master()[r.from]; if (m && (!filter || filter(m))){ const o = giv[r.from] = giv[r.from] || {n:0}; o.n++; } }
+  });
+  const sort = o => Object.keys(o).map(k => Object.assign({k}, o[k])).sort((a,b) => b.n - a.n || (b.p||0) - (a.p||0));
+  return {rcv: sort(rcv), giv: sort(giv)};
+}
+function leadersHtml(){
+  const [from, to] = periodRange(lbPeriod), myS = actor.rec.showroom;
+  const st = leaderStats(from, to, lbScope === "mine" ? (m => m.showroom === myS) : null);
+  const pod = st.rcv.slice(0, 3);
+  const podHtml = pod.length ? '<div class="podium">' + pod.map((x, i) => { const m = master()[x.k]; return '<div class="pod p' + (i+1) + '"><div class="md">0' + (i+1) + '</div><b>' + esc(m.name) + '</b><span>' + esc(m.showroom) + '</span><div class="v">' + x.n + '</div><span>recognitions</span></div>'; }).join("") + '</div>' : '';
+  const lst = arr => arr.length ? '<ol class="mini">' + arr.slice(0, 10).map((x, i) => { const m = master()[x.k]; return '<li' + (x.k === me() ? ' style="background:var(--em-soft)"' : '') + '><span><span class="rk">' + pad(i+1) + '</span>' + esc(m.name) + ' <span class="dept">' + esc(m.showroom) + '</span></span><b>' + x.n + '</b></li>'; }).join("") + '</ol>' : emptyHtml("", "Nothing in this period yet", "");
+  const srCov = coverageBy(r => r.showroom, from, to).sort((a,b) => b.rcvPct - a.rcvPct);
+  return '<div class="toolbar">' + chipsHtml(PERIODS.filter(p => p.k !== "d30" && p.k !== "d90"), lbPeriod, "lbp") + chipsHtml([{k:"all", l:"All showrooms"}, {k:"mine", l:"My showroom"}], lbScope, "lbs") + '</div>' +
+    '<section class="panel"><div class="sec-h"><h2>Most recognised</h2></div>' + podHtml + '<div class="two-col"><div><h3>Top receivers</h3>' + lst(st.rcv) + '</div><div><h3>Top givers</h3>' + lst(st.giv) + '</div></div></section>' +
+    '<section class="panel"><div class="sec-h"><h2>Showrooms by coverage</h2><span class="sub">Share of staff recognised</span></div>' + srCov.map(x => covRow(x.g, x.rcvPct, x.g === myS ? "var(--brass)" : "var(--em)")).join("") + '</section>';
+}
+function covRow(label, p, color){ return '<div class="cov"><span class="bn" title="' + esc(label) + '">' + esc(label) + '</span><span class="tr"><i style="width:' + Math.min(100, p) + '%;background:' + (color || "var(--em)") + '"></i></span><b>' + p + '%</b></div>'; }
+function coverageBy(groupFn, from, to, filter){
+  const g = {}, rc = new Set(), gv = new Set(); let count = {};
+  recs().forEach(r => { if (r.kind === "boost" || !isLive(r) || r.ts < from || r.ts > to) return; (r.to||[]).forEach(t => { rc.add(t); count[t] = (count[t] || 0) + 1; }); if (r.kind === "peer" || r.kind === "spot") gv.add(r.from); });
+  staffList().forEach(r => { if (filter && !filter(r)) return; const k = groupFn(r) || "Unassigned"; const o = g[k] = g[k] || {g:k, n:0, rcv:0, giv:0, recs:0}; o.n++; if (rc.has(r.key)) o.rcv++; if (gv.has(r.key)) o.giv++; o.recs += count[r.key] || 0; });
+  return Object.values(g).map(o => Object.assign(o, {rcvPct: pct(o.rcv, o.n), givPct: pct(o.giv, o.n)}));
+}
+
+/* =========================================================
+   Small dialogs (the viewer has no alert/confirm/prompt)
+   ========================================================= */
+function askDialog(html, onReady){
+  return new Promise(res => {
+    let d = document.getElementById("dlgAsk");
+    if (!d){ d = document.createElement("dialog"); d.id = "dlgAsk"; d.style.width = "min(460px, calc(100% - 24px))"; document.body.appendChild(d); }
+    d.innerHTML = '<div class="dlg">' + html + '</div>'; translateTree(d);
+    let done = false; const finish = v => { if (done) return; done = true; try { d.close(); } catch(e){} res(v); };
+    d.onclose = () => finish(null); d.oncancel = ev => { ev.preventDefault(); finish(null); };
+    try { d.showModal(); } catch(e){ d.setAttribute("open", ""); }
+    onReady(d, finish);
+  });
+}
+function askConfirm(msg, okLabel){
+  return askDialog('<p style="margin:4px 0 16px;font-size:16px;line-height:1.5">' + esc(msg) + '</p><div class="dlg-foot"><button type="button" class="btn" data-a="no">Cancel</button><button type="button" class="btn primary" data-a="yes">' + esc(okLabel || "Yes, continue") + '</button></div>',
+    (d, finish) => { d.querySelector('[data-a="no"]').onclick = () => finish(false); const y = d.querySelector('[data-a="yes"]'); y.onclick = () => finish(true); y.focus(); }).then(v => v === true);
+}
+function askInput(title, label, type, val){
+  return askDialog('<h2>' + esc(title) + '</h2><div class="field"><label for="askIn">' + esc(label) + '</label><input type="' + (type || "password") + '" id="askIn" autocomplete="new-password" value="' + esc(val || "") + '"></div><div class="dlg-foot"><button type="button" class="btn" data-a="no">Cancel</button><button type="button" class="btn primary" data-a="yes">OK</button></div>',
+    (d, finish) => { const i = d.querySelector("#askIn"); i.focus(); i.onkeydown = e => { if (e.key === "Enter"){ e.preventDefault(); finish(i.value); } }; d.querySelector('[data-a="no"]').onclick = () => finish(null); d.querySelector('[data-a="yes"]').onclick = () => finish(i.value); });
+}
+
+/* =========================================================
+   Recognise dialog: peer appreciation and spot awards
+   ========================================================= */
+let RS = null;
+const TEMPLATES = {
+  customer: ["Thank you for the patience and warmth you showed our customer today. They left smiling and promised to come back.", "You turned a hesitant walk-in into a delighted customer. That is what our showroom is about."],
+  team: ["Thank you for jumping in to help the counter during the rush. We could not have managed it without you.", "You made the whole team's day easier. Thank you for always being there."],
+  extra: ["You stayed back to finish the stock count so the team could start fresh tomorrow. That extra effort matters.", "Thank you for going far beyond your role to make sure the customer's order was ready on time."],
+  trust: ["Thank you for flagging the billing mismatch straight away. Your honesty protects our customers and our name.", "You handled the customer's jewellery with complete care and transparency. Thank you."],
+  excel: ["Brilliant month! You crossed your target and kept every customer happy along the way.", "Your attention to detail on the display made the whole floor shine. Excellent work."],
+  own: ["You owned the problem from start to finish and kept the customer updated at every step. Thank you.", "Thank you for taking charge when it was needed. The team followed your lead."],
+  learn: ["Great to see you learn the new hallmarking process so quickly and teach it to others.", "Thank you for sharing your product knowledge with the new joiners."],
+  thanks: ["Just a big thank you for everything you do every day.", "Thank you for your help today. It made a real difference."],
+  celebrate: ["Wishing you a wonderful day and a great year ahead!", "Congratulations and thank you for being part of our family!"]
+};
+function openRecognise(opts){
+  opts = opts || {};
+  const mg = myMgr(), adm = isAdminActor();
+  RS = {to: (opts.to || []).filter(k => master()[k] && k !== me()), value: opts.value || null, kind: adm ? "spot" : (opts.kind === "spot" && mg ? "spot" : "peer"), pts: 0, msg: opts.msg || "", q: "", tpl: 0};
+  if (RS.kind === "spot") RS.pts = 100;
+  drawRec(); const d = $("#dlgRec"); if (!d.open) d.showModal();
+  const f = RS.to.length ? $("#rsMsg") : $("#rsFind"); if (f) f.focus();
+}
+function recLimits(){
+  const s = settings(), k = me(), n = Math.max(1, RS.to.length);
+  if (RS.kind === "peer") return {left: Math.max(0, s.peerAllowance - peerUsed(k)), max: s.peerMax, n};
+  if (isAdminActor()) return {left: Infinity, max: Infinity, n};
+  const mg = myMgr(); return {left: Math.max(0, mg.budget - budgetUsed(k)), max: s.spotMax, n};
+}
+function drawRec(){
+  const s = settings(), mg = myMgr(), adm = isAdminActor(), L = recLimits();
+  const opts = RS.kind === "peer" ? [0,5,10,20,s.peerMax].filter((v,i,a) => v <= s.peerMax && a.indexOf(v) === i) : [100,250,500,1000].filter(v => v <= (adm ? Infinity : s.spotMax));
+  const total = RS.pts * L.n;
+  $("#recBody").innerHTML =
+    '<h2>' + (RS.kind === "spot" ? "Give a spot award" : "Recognise a colleague") + '</h2>' +
+    ((mg && !adm) ? '<div class="seg" style="grid-template-columns:1fr 1fr;margin-bottom:14px"><button type="button" class="' + (RS.kind === "peer" ? "sel" : "") + '" data-rk="peer">Appreciation</button><button type="button" class="' + (RS.kind === "spot" ? "sel" : "") + '" data-rk="spot">Spot award</button></div>' : '') +
+    '<div class="field pick"><label for="rsFind">Who are you recognising?</label>' +
+      (RS.to.length ? '<div class="sel-chips">' + RS.to.map(k => '<span>' + esc(nameOf(k)) + '<button type="button" data-rm="' + esc(k) + '" aria-label="Remove">×</button></span>').join("") + '</div>' : '') +
+      (RS.to.length < 10 ? '<input type="search" id="rsFind" placeholder="Type a name, employee ID or showroom" autocomplete="off" value="' + esc(RS.q) + '"><div id="rsRes"></div>' : '') + '</div>' +
+    '<div class="field"><span class="lbl">Pick a value</span><div class="vgrid">' + values().map(v => '<button type="button" data-val="' + esc(v.k) + '" aria-pressed="' + (RS.value === v.k) + '" style="--vc:' + esc(v.c) + '"><span class="ve" data-notr>' + esc(valueCode(v)) + '</span>' + esc(v.name) + '</button>').join("") + '</div></div>' +
+    '<div class="field"><label for="rsMsg">What did they do? Be specific</label><textarea id="rsMsg" maxlength="600" placeholder="e.g. Stayed back to help a family choose their wedding set and made them feel special.">' + esc(RS.msg) + '</textarea>' +
+      '<div class="aihelp"><button type="button" class="btn small" id="rsTpl">Suggest a message</button>' + (sampleFn ? '<button type="button" class="btn small" id="rsAi">Help me write it</button>' : '') + '</div><div class="aiout" id="rsAiOut"></div></div>' +
+    '<div class="field"><span class="lbl">' + (RS.kind === "spot" ? "Points per person" : "Add points (optional)") + '</span><div class="ptchips">' +
+      opts.map(v => '<button type="button" data-pt="' + v + '" aria-pressed="' + (RS.pts === v) + '"' + (v * L.n > L.left ? ' disabled' : '') + '>' + (v ? nf(v) : "No points") + '</button>').join("") +
+      (RS.kind === "spot" ? '<input type="number" id="rsPts" min="1" step="1" aria-label="Custom points" value="' + (RS.pts || "") + '">' : '') + '</div>' +
+      '<p class="budgetline">' + (RS.kind === "peer" ? 'You have <b>' + nf(L.left) + '</b> of ' + nf(s.peerAllowance) + ' points left to give this month.' : adm ? 'Awards from HR are paid immediately and do not use a manager budget.' : 'Budget left this month: <b>' + nf(L.left) + '</b> pts.') +
+        (L.n > 1 && RS.pts ? ' <span>Total for this award</span>: <b>' + nf(total) + '</b> pts.' : '') +
+        (RS.kind === "spot" && !adm && RS.pts > s.approvalAbove ? ' <b style="color:var(--yellow)">Above ' + nf(s.approvalAbove) + ' pts per person, so HR will approve it first.</b>' : '') + '</p></div>' +
+    '<p class="err" id="rsErr"></p>' +
+    '<div class="dlg-foot"><button type="button" class="btn" id="rsCancel">Cancel</button><button type="button" class="btn primary" id="rsSend">' + (RS.kind === "spot" ? "Send award" : "Post recognition") + '</button></div>';
+  bindRec();
+}
+function rsSearch(){
+  const q = RS.q.trim().toLowerCase(), box = $("#rsRes"); if (!box) return;
+  if (!q){ box.innerHTML = ""; return; }
+  const hits = staffList().filter(r => r.key !== me() && RS.to.indexOf(r.key) < 0 && (r.name.toLowerCase().indexOf(q) >= 0 || String(r.id).toLowerCase().indexOf(q) >= 0 || r.showroom.toLowerCase().indexOf(q) >= 0)).slice(0, 8);
+  box.innerHTML = '<div class="qs-res" style="position:static;margin-top:4px">' + (hits.length ? hits.map((r, i) => '<button type="button" data-add="' + esc(r.key) + '"' + (i === 0 ? ' class="act"' : '') + '><b>' + esc(r.name) + '</b> <span class="dept">' + esc(r.id) + ' · ' + esc([r.designation, r.showroom].filter(Boolean).join(" · ")) + '</span></button>').join("") : '<div class="none">No one matches that.</div>') + '</div>';
+  translateTree(box);
+  box.querySelectorAll("[data-add]").forEach(b => b.onclick = () => addTo(b.dataset.add));
+}
+function addTo(k){ if (RS.to.indexOf(k) < 0 && RS.to.length < 10) RS.to.push(k); RS.q = ""; fixPts(); drawRec(); const f = $("#rsFind"); if (f) f.focus(); }
+function fixPts(){ const L = recLimits(); if (RS.pts * L.n > L.left) RS.pts = RS.kind === "peer" ? 0 : RS.pts; }
+function bindRec(){
+  const body = $("#recBody");
+  body.querySelectorAll("[data-rk]").forEach(b => b.onclick = () => { RS.kind = b.dataset.rk; RS.pts = RS.kind === "spot" ? 100 : 0; drawRec(); });
+  body.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { RS.to = RS.to.filter(k => k !== b.dataset.rm); drawRec(); });
+  body.querySelectorAll("[data-val]").forEach(b => b.onclick = () => { RS.value = b.dataset.val; drawRec(); });
+  body.querySelectorAll("[data-pt]").forEach(b => b.onclick = () => { RS.pts = +b.dataset.pt; drawRec(); });
+  const f = $("#rsFind");
+  if (f){ f.oninput = () => { RS.q = f.value; rsSearch(); }; f.onkeydown = e => { if (e.key === "Enter"){ e.preventDefault(); const a = body.querySelector("[data-add]"); if (a) addTo(a.dataset.add); } }; if (RS.q) rsSearch(); }
+  const m = $("#rsMsg"); m.oninput = () => { RS.msg = m.value; };
+  const p = $("#rsPts"); if (p) p.onchange = () => { RS.pts = Math.max(0, Math.round(+p.value || 0)); drawRec(); };
+  $("#rsTpl").onclick = () => { const v = RS.value || "thanks", list = TEMPLATES[v] || TEMPLATES.thanks; RS.msg = list[RS.tpl++ % list.length]; m.value = RS.msg; };
+  const ai = $("#rsAi"); if (ai) ai.onclick = aiDraft;
+  $("#rsCancel").onclick = () => $("#dlgRec").close();
+  $("#rsSend").onclick = sendRec;
+  translateTree(body);
+}
+let aiCtl = null;
+async function aiDraft(){
+  const out = $("#rsAiOut"), m = $("#rsMsg"), btn = $("#rsAi");
+  if (!RS.to.length){ out.textContent = "Add who you are recognising first."; return; }
+  const v = valueOf(RS.value || "thanks"), people = RS.to.map(k => { const r = master()[k]; return r.name.split(" ")[0] + (r.designation ? " (" + r.designation + ")" : ""); }).join(", ");
+  const langName = (LANGS.find(l => l.k === LANG) || {n:"English"}).n;
+  const prompt = "Write one short workplace recognition message (2 to 3 sentences, under 60 words) for a jewellery retail showroom team in India.\n" +
+    "Recipients: " + people + "\nValue being recognised: " + v.name + "\n" +
+    (RS.msg.trim() ? "The giver's notes (keep their facts, improve the wording): " + RS.msg.trim() + "\n" : "Keep it warm and specific; do not invent sales numbers or customer names.\n") +
+    "Write in " + (langName === "English" ? "English" : "the language " + langName) + ". Reply with only the message text, no quotes.";
+  btn.disabled = true; out.textContent = "Writing…"; aiCtl = new AbortController();
+  try {
+    const r = await sampleFn(prompt, {modelTier:"quick", signal: aiCtl.signal, onText: ({text}) => { m.value = text; RS.msg = text; }});
+    m.value = r.text.trim(); RS.msg = m.value; out.textContent = "Edit it so it sounds like you.";
+  } catch(e){
+    out.textContent = e && e.code === "not_granted" ? "Writing help isn't available here. Use Suggest a message instead." : e && e.code === "rate_limited" ? "Writing help is busy. Try again in a minute." : "Couldn't write a draft this time.";
+  }
+  btn.disabled = false; translateTree(out);
+}
+async function sendRec(){
+  const err = $("#rsErr"), s = settings(), L = recLimits(), adm = isAdminActor();
+  const say = t => { err.textContent = t; translateTree(err); };
+  RS.msg = $("#rsMsg").value.trim();
+  if (!RS.to.length) return say("Add at least one person.");
+  if (!RS.value) return say("Pick the value this recognition is for.");
+  if (RS.msg.length < 10) return say("Write a short message saying what they did (at least 10 characters).");
+  if (RS.kind === "spot" && RS.pts < 1) return say("Enter the points for this award.");
+  if (RS.pts > L.max) return say("The most you can give one person here is " + nf(L.max) + " points.");
+  if (RS.pts * L.n > L.left) return say("That is more than you have left this month (" + nf(L.left) + " pts).");
+  const status = RS.kind === "spot" && !adm && RS.pts > s.approvalAbove ? "pending" : "approved";
+  const r = {id: uid(), kind: RS.kind, from: me(), to: RS.to.slice(), value: RS.value, msg: RS.msg, pts: RS.pts, ts: Date.now(), status};
+  await writeDoc("recog/" + r.id, r);
+  $("#dlgRec").close();
+  toast(status === "pending" ? "Sent to HR for approval. It appears on the wall once approved." : "Posted to the wall. Thank you for recognising!");
+  if (status !== "pending") confetti("THANKS");
+  softRender();
+}
+
+/* ----- Boost an existing recognition ----- */
+async function openBoost(id){
+  const r = docs["recog/" + id]; if (!r) return;
+  const s = settings(), adm = isAdminActor(), mg = myMgr(), n = (r.to || []).length;
+  const left = adm ? Infinity : Math.max(0, mg.budget - budgetUsed(me()));
+  const opts = [50,100,250,500].filter(v => v * n <= left && (adm || v <= s.spotMax));
+  if (!opts.length){ toast("Your award budget for this month is used up."); return; }
+  const pts = await askDialog('<h2>Boost this recognition</h2><p class="sub" style="margin:0 0 12px">Add points from ' + (adm ? 'HR' : 'your award budget') + ' to ' + esc((r.to||[]).map(nameOf).join(", ")) + '.' + (adm ? '' : ' Budget left: ' + nf(left) + ' pts.') + '</p><div class="ptchips">' + opts.map(v => '<button type="button" data-p="' + v + '">+' + v + ' pts</button>').join("") + '</div><div class="dlg-foot"><button type="button" class="btn" data-a="no">Cancel</button></div>',
+    (d, finish) => { d.querySelectorAll("[data-p]").forEach(b => b.onclick = () => finish(+b.dataset.p)); d.querySelector('[data-a="no"]').onclick = () => finish(null); });
+  if (!pts) return;
+  const status = !adm && pts > s.approvalAbove ? "pending" : "approved";
+  const b = {id: uid(), kind:"boost", ref:id, from: me(), to: r.to.slice(), value: r.value, msg:"", pts, ts: Date.now(), status};
+  await writeDoc("recog/" + b.id, b); toast(status === "pending" ? "Boost sent to HR for approval" : "Boosted! +" + pts + " pts each"); softRender();
+}
+
+/* ----- Reactions and comments ----- */
+function toggleReact(id, e){
+  const k = me(), path = "react/" + id + "~" + k, cur = docs[path];
+  if (cur && cur.e === e) deleteDoc(path); else writeDoc(path, {r:id, k, e, ts:Date.now()});
+  softRender();
+}
+let cmOpen = null;
+function openComments(id){
+  cmOpen = id; const r = docs["recog/" + id]; if (!r){ cmOpen = null; return; }
+  const list = cmtsOf(id), k = me();
+  $("#cmBody").innerHTML = '<h2>Comments</h2><p class="sub" style="margin:0">' + esc((r.to||[]).map(nameOf).join(", ")) + ' · ' + valueOf(r.value).e + ' ' + esc(valueOf(r.value).name) + '</p>' +
+    (list.length ? '<ul class="cthread">' + list.map(c => '<li class="' + (c.k === k ? 'mine' : '') + '"><div class="who"><b>' + esc(nameOf(c.k)) + '</b> · ' + ago(c.ts) + ((c.k === k || isAdminActor()) ? ' · <button type="button" class="btn link" style="font-size:12px;padding:0" data-delc="' + esc(c.id) + '">Delete</button>' : '') + '</div>' + esc(c.text) + '</li>').join("") + '</ul>' : '<p class="sub">No comments yet. Add a congratulation.</p>') +
+    '<div class="field"><label for="cmText">Add a comment</label><textarea id="cmText" maxlength="300" placeholder="Congratulations! Well deserved."></textarea></div>' +
+    '<div class="dlg-foot"><button type="button" class="btn" id="cmClose">Close</button><button type="button" class="btn primary" id="cmPost">Post</button></div>';
+  const d = $("#dlgCm"); if (!d.open) d.showModal(); translateTree(d);
+  $("#cmClose").onclick = () => { cmOpen = null; d.close(); };
+  d.onclose = () => { cmOpen = null; };
+  $("#cmPost").onclick = async () => { const t = $("#cmText").value.trim(); if (!t) return; const c = {id: uid(), r:id, k, text:t, ts:Date.now()}; await writeDoc("cmt/" + c.id, c); openComments(id); softRender(); };
+  d.querySelectorAll("[data-delc]").forEach(b => b.onclick = async () => { await deleteDoc("cmt/" + b.dataset.delc); openComments(id); softRender(); });
+}
+
+/* ----- Redeem ----- */
+async function redeemItem(id){
+  const i = catalog().find(x => x.id === id), k = me(); if (!i) return;
+  const w = walletOf(k); if (w.bal < i.pts){ toast("Not enough points yet"); return; }
+  if (!await askConfirm("Redeem " + i.name + " for " + nf(i.pts) + " points? HR will process the request and update its status here. Your balance after this: " + nf(w.bal - i.pts) + " points.", "Redeem")) return;
+  const x = {id: uid(), key: k, item: i.id, name: i.name, e: i.e, pts: i.pts, ts: Date.now(), status: "pending"};
+  await writeDoc("redeem/" + x.id, x); toast("Request sent to HR"); confetti("GIFT"); softRender();
+}
+
+/* ----- Recognition card image for printing or sharing ----- */
+function wrapText(ctx, text, maxW){ const words = String(text).split(/\s+/), lines = []; let line = ""; words.forEach(w => { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line){ lines.push(line); line = w; } else line = t; }); if (line) lines.push(line); return lines; }
+async function downloadCard(id){
+  const r = docs["recog/" + id]; if (!r || !downloads) return;
+  const v = valueOf(r.value), W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#04231a"); g.addColorStop(.5, "#0b3d30"); g.addColorStop(1, "#0f5c46");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const sg = x.createRadialGradient(W/2, H + 80, 40, W/2, H + 80, 700); sg.addColorStop(0, "rgba(255,214,106,.9)"); sg.addColorStop(1, "rgba(255,214,106,0)"); x.fillStyle = sg; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#fff"; x.textAlign = "center";
+  x.font = "700 44px 'Bricolage Grotesque', sans-serif"; x.fillText("✦ GReaT Rewards ✦", W/2, 120);
+  x.font = "900 170px 'Big Shoulders Display', Impact, sans-serif"; x.fillStyle = "#d9b14e"; x.fillText(r.kind === "milestone" ? r.years + "Y" : valueCode(v), W/2, 370); x.fillStyle = "#fff";
+  x.font = "600 40px 'Public Sans', sans-serif"; x.fillStyle = "rgba(255,255,255,.85)"; x.fillText(r.kind === "milestone" ? "Work anniversary" : r.kind === "birthday" ? "Happy birthday" : "Recognised for " + v.name, W/2, 450);
+  x.fillStyle = "#fff"; x.font = "700 80px 'Bricolage Grotesque', sans-serif";
+  wrapText(x, (r.to||[]).map(nameOf).join(", "), W - 160).slice(0, 2).forEach((l, i) => x.fillText(l, W/2, 560 + i*90));
+  x.font = "400 40px 'Public Sans', sans-serif";
+  const msg = r.msg || (r.kind === "milestone" ? r.years + " years with us. Thank you!" : "");
+  wrapText(x, "“" + msg + "”", W - 200).slice(0, 7).forEach((l, i) => x.fillText(l, W/2, 780 + i*56));
+  x.font = "600 36px 'Public Sans', sans-serif"; x.fillStyle = "#ffe9a8";
+  x.fillText("From " + nameOf(r.from) + " · " + fmtT(r.ts) + (+r.pts ? " · +" + nf(r.pts) + " pts" : ""), W/2, H - 120);
+  c.toBlob(async blob => {
+    try { await downloads.save({filename: "recognition-" + String((r.to||[]).map(nameOf).join("-")).replace(/[^A-Za-z0-9]+/g, "-").slice(0, 40) + ".png", data: blob}); }
+    catch(e){ if (e && e.code !== "declined") toast("Couldn't save the card here."); }
+  }, "image/png");
+}
+
+/* =========================================================
+   One click handler for every [data-act] control
+   ========================================================= */
+document.addEventListener("click", async e => {
+  const b = e.target.closest && e.target.closest("[data-act]"); if (!b) return;
+  const a = b.dataset.act, id = b.dataset.id, v = b.dataset.v;
+  if (a === "tab") return setTab(v);
+  if (a === "atab") return setAdminTab(v);
+  if (a === "signout"){ signOutAll(); return go("login"); }
+  if (a === "chpw") return go(isAdminActor() ? "admpw" : "pw");
+  if (a === "recog") return openRecognise({to: b.dataset.k ? [b.dataset.k] : [], kind: b.dataset.kind});
+  if (a === "wish") return openRecognise({to:[b.dataset.k], value:"celebrate"});
+  if (a === "react") return toggleReact(id, b.dataset.e);
+  if (a === "cmts") return openComments(id);
+  if (a === "boost") return openBoost(id);
+  if (a === "card") return downloadCard(id);
+  if (a === "delrec"){ if (await askConfirm("Remove this recognition from the wall? Points it gave are taken back from the people's balances.", "Remove")){ boostsOf(id).forEach(x => deleteDoc("recog/" + x.id)); await deleteDoc("recog/" + id); toast("Removed"); softRender(); } return; }
+  if (a === "redeem") return redeemItem(id);
+  if (a === "more"){ feedLimit += 25; return softRender(); }
+  if (a === "feedf"){ feedFilter = v; feedLimit = 25; return softRender(); }
+  if (a === "catf"){ catFilter = v; return softRender(); }
+  if (a === "minev"){ mineView = v; feedLimit = 25; return softRender(); }
+  if (a === "lbp"){ lbPeriod = v; return softRender(); }
+  if (a === "lbs"){ lbScope = v; return softRender(); }
+  if (typeof adminAct === "function") adminAct(a, b, e);
+});
+
+/* =========================================================
+   Admin (HR) console
+   ========================================================= */
+let dashPeriod = "d30", dashShowroom = "all", zeroDept = "all", staffQ = "", celMonth = null, pendingUpload = null, catDraft = null, setDraft = null;
+function renderAdmin(){
+  const pend = recs().filter(r => r.status === "pending").length + redeems().filter(x => x.status === "pending").length;
+  const tabs = [{k:"dash", l:"Insights"}, {k:"approvals", l:"Approvals", n:pend}, {k:"celebrations", l:"Celebrations"}, {k:"wall", l:"Wall"}, {k:"catalog", l:"Catalogue"}, {k:"staff", l:"Staff & managers"}, {k:"settings", l:"Settings"}];
+  if (!tabs.some(t => t.k === adminTab)) adminTab = "dash";
+  const n = staffList().length;
+  const [m0] = periodRange("month"), ptsM = recs().reduce((a, r) => a + (isLive(r) && r.ts >= m0 ? (+r.pts || 0) * (r.to || []).length : 0), 0);
+  $("#app").innerHTML = shellHtml({nav:tabs, cur:adminTab, act:"atab", words:["Recognise", "Reward", "Celebrate"], stamp:"HR", hex:"R&R",
+    eyebrow:"HR desk · " + esc(mLabel(curMonth())), title:'Rewards <span class="amp">&amp;</span><br>Recognition',
+    strip: hmStrip([{l:"Admin ID", v:esc(adminId()), cls:"id"}, {l:"Staff", v:nf(n)}, {l:"Showrooms", v:String(showrooms().length)}, {l:"Managers", v:String(allManagers().length)}, {l:"Waiting for you", v:String(pend), cls: pend ? "hot" : ""}, {l:"Points this month", v:nf(ptsM)}]),
+    actions:'<button class="btn gold" data-act="recog">Give an award</button>' + (pend ? '<button class="btn" data-act="atab" data-v="approvals">Review ' + pend + ' waiting</button>' : '')});
+  const pane = $("#pane");
+  if (!n && adminTab !== "staff" && adminTab !== "settings" && adminTab !== "catalog"){ pane.innerHTML = '<div class="panel">' + emptyHtml("", "No staff list yet", "Upload your staff Excel in Staff & managers. Everyone can then sign in with their employee ID.") + '<div style="text-align:center"><button class="btn primary" data-act="atab" data-v="staff">Upload staff list</button></div></div>'; startMotto(); return; }
+  ({dash:dashHtml, approvals:approvalsHtml, celebrations:celebHtmlAdmin, wall:() => '<div class="feedbar"><h2>Everything on the wall</h2></div>' + feedListHtml(recs().filter(r => r.kind !== "boost" && r.status !== "rejected").sort((a,b) => b.ts - a.ts)), catalog:catalogHtml, staff:staffHtml, settings:settingsHtml}[adminTab])(pane);
+  startMotto();
+}
+function mount(pane, html, bind){ if (typeof pane === "string") return pane; pane.innerHTML = html; if (bind) bind(pane); return ""; }
+
+/* ----- Insights ----- */
+function vbarsSvg(data, color){
+  const W = 640, H = 220, pl = 10, pb = 34, pt = 26, max = Math.max(1, ...data.map(d => d.v)), bw = (W - pl*2) / data.length;
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Chart">' + [0,.5,1].map(f => '<line x1="0" x2="' + W + '" y1="' + (pt + (H-pt-pb)*(1-f)) + '" y2="' + (pt + (H-pt-pb)*(1-f)) + '" stroke="var(--line)" stroke-width="1"/>').join("") +
+    data.map((d, i) => { const h = (H - pt - pb) * d.v / max, x = pl + i*bw + bw*.18, w = bw*.64, y = H - pb - h;
+      return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" rx="6" fill="' + (i === data.length - 1 ? "var(--pink)" : (color || "var(--violet)")) + '"/>' +
+        '<text class="v" x="' + (x + w/2).toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle">' + nf(d.v) + '</text>' +
+        '<text x="' + (x + w/2).toFixed(1) + '" y="' + (H - pb + 18) + '" text-anchor="middle">' + esc(d.l) + '</text>' + (d.sub ? '<text x="' + (x + w/2).toFixed(1) + '" y="' + (H - 2) + '" text-anchor="middle" style="font-size:11px">' + esc(d.sub) + '</text>' : ''); }).join("") + '</svg>';
+}
+function dashData(){
+  const [from, to] = periodRange(dashPeriod), f = r => dashShowroom === "all" || r.showroom === dashShowroom, M = master();
+  const staff = staffList().filter(f), inF = k => M[k] && f(M[k]);
+  const live = recs().filter(r => isLive(r) && r.ts >= from && r.ts <= to);
+  const main = live.filter(r => r.kind !== "boost" && (r.to||[]).some(inF));
+  const rcv = new Set(), giv = new Set(), byKind = {}, byVal = {}; let pts = 0;
+  live.forEach(r => { (r.to||[]).forEach(t => { if (inF(t)) pts += +r.pts || 0; }); });
+  main.forEach(r => { (r.to||[]).forEach(t => { if (inF(t)) rcv.add(t); }); byKind[r.kind] = (byKind[r.kind] || 0) + 1; byVal[r.value] = (byVal[r.value] || 0) + 1; });
+  recs().forEach(r => { if ((r.kind === "peer" || r.kind === "spot") && isLive(r) && r.ts >= from && r.ts <= to && inF(r.from)) giv.add(r.from); });
+  const mgrs = staff.filter(r => mgrOf(r.key)), activeM = mgrs.filter(r => giv.has(r.key));
+  return {from, to, f, staff, main, rcv, giv, byKind, byVal, pts, mgrs, activeM};
+}
+function dashHtml(pane){
+  const s = settings(), d = dashData(), N = d.staff.length;
+  const kpi = (val, lbl, sub) => '<div class="kpi"><b>' + val + '</b><span>' + lbl + '</span>' + (sub ? '<div class="sub" style="margin:2px 0 0;font-size:12px">' + sub + '</div>' : '') + '</div>';
+  const months6 = []; { const t = new Date(); for (let i=5;i>=0;i--){ const x = new Date(t.getFullYear(), t.getMonth() - i, 1); months6.push(x.getFullYear() + "-" + pad(x.getMonth()+1)); } }
+  const M = master(), inF = k => M[k] && d.f(M[k]);
+  const trend = months6.map(m => { const list = recs().filter(r => r.kind !== "boost" && isLive(r) && monthOf(r.ts) === m && (r.to||[]).some(inF)); const u = new Set(); list.forEach(r => (r.to||[]).forEach(t => { if (inF(t)) u.add(t); })); return {l: mLabel(m, true), v: list.length, sub: pct(u.size, N) + "%"}; });
+  const vals = allValues().map(v => ({v, n: d.byVal[v.k] || 0})).filter(x => x.n).sort((a,b) => b.n - a.n), vmax = Math.max(1, ...vals.map(x => x.n));
+  const srs = coverageBy(r => r.showroom, d.from, d.to, d.f).sort((a,b) => b.rcvPct - a.rcvPct);
+  const ptsBy = {}; recs().forEach(r => { if (!isLive(r) || r.ts < d.from || r.ts > d.to) return; (r.to||[]).forEach(t => { const m = M[t]; if (m && d.f(m)) ptsBy[m.showroom] = (ptsBy[m.showroom] || 0) + (+r.pts || 0); }); });
+  const eq = [["Gender", r => r.gender || "Not given"], ["Tenure", r => tenureBand(r.doj)], ["Department", r => r.dept || "Unassigned"]].map(([t, fn]) => '<div><h3>' + t + '</h3>' + coverageBy(fn, d.from, d.to, d.f).sort((a,b) => b.n - a.n).slice(0, 8).map(x => covRow(x.g + " (" + x.n + ")", x.rcvPct, x.rcvPct < 40 ? "var(--red)" : x.rcvPct < 70 ? "var(--yellow)" : "var(--green)")).join("") + '</div>').join("");
+  const zero = d.staff.filter(r => !d.rcv.has(r.key) && (zeroDept === "all" || (r.dept || "Unassigned") === zeroDept));
+  const cm = curMonth();
+  const mrows = d.mgrs.map(r => { const m = mgrOf(r.key), used = budgetUsed(r.key, cm), team = teamOf(r.key), now = Date.now(); const cov = team.filter(t => { const l = lastRecognised(t.key); return l && now - l <= 30*DAY; }).length; return {r, m, used, burn: pct(used, m.budget), cov: pct(cov, team.length), gave: given(r.key).filter(x => monthOf(x.ts) === cm).length}; }).sort((a,b) => a.gave - b.gave);
+  const html =
+    '<div class="toolbar"><div class="grow">' + chipsHtml(PERIODS, dashPeriod, "dperiod") + '</div><select class="inline" id="dShow" aria-label="Showroom"><option value="all">All showrooms</option>' + showrooms().map(x => '<option' + (x === dashShowroom ? ' selected' : '') + '>' + esc(x) + '</option>').join("") + '</select></div>' +
+    '<div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">' +
+      kpi(nf(d.main.length), "Recognitions", Object.keys(KIND).filter(k => d.byKind[k]).map(k => d.byKind[k] + " " + KIND[k].toLowerCase()).join(" · ")) +
+      kpi(pct(d.rcv.size, N) + "%", "Receiver coverage", nf(d.rcv.size) + " of " + nf(N) + " staff recognised") +
+      kpi(pct(d.giv.size, N) + "%", "Giver coverage", nf(d.giv.size) + " staff gave recognition") +
+      kpi(nf(d.pts), "Points issued", "≈ ₹" + nf(d.pts * s.rupeePerPt)) +
+      kpi(pct(d.activeM.length, d.mgrs.length) + "%", "Manager activation", d.activeM.length + " of " + d.mgrs.length + " managers recognised someone") + '</div>' +
+    '<div class="two-col"><section class="panel vbars"><h2>Monthly trend</h2><p class="sub" style="margin:0 0 6px">Recognitions per month, with the share of staff recognised under each month.</p>' + vbarsSvg(trend) + '</section>' +
+      '<section class="panel"><h2>Values recognised</h2><p class="sub" style="margin:0 0 10px">Which company values people are being recognised for.</p>' + (vals.length ? vals.map(x => '<div class="cov"><span class="bn">' + x.v.e + ' ' + esc(x.v.name) + '</span><span class="tr"><i style="width:' + (x.n / vmax * 100) + '%;background:' + esc(x.v.c) + '"></i></span><b>' + x.n + '</b></div>').join("") : emptyHtml("📭", "No recognition in this period", "")) + '</section></div>' +
+    '<section class="panel"><h2>Showrooms</h2><div class="tbl-wrap"><table><thead><tr><th>Showroom</th><th class="num">Staff</th><th class="num">Recognised</th><th class="num">Gave</th><th class="num">Recognitions</th><th class="num">Points</th></tr></thead><tbody>' +
+      srs.map(x => '<tr><td><b>' + esc(x.g) + '</b></td><td class="num">' + x.n + '</td><td class="heat" style="background:' + (x.rcvPct >= 70 ? "var(--green-soft)" : x.rcvPct >= 40 ? "var(--yellow-soft)" : "var(--red-soft)") + '">' + x.rcvPct + '%</td><td class="num">' + x.givPct + '%</td><td class="num">' + x.recs + '</td><td class="num">' + nf(ptsBy[x.g] || 0) + '</td></tr>').join("") + '</tbody></table></div></section>' +
+    '<section class="panel"><h2>Fairness check</h2><p class="sub" style="margin:0 0 10px">Share of each group recognised in this period. Red bars show groups being missed.</p><div class="eqgrid">' + eq + '</div></section>' +
+    '<section class="panel"><div class="feedbar"><div><h2>Not recognised in this period</h2><p class="sub" style="margin:0">' + nf(zero.length) + ' <span>people</span></p></div><div class="actions"><select class="inline" id="zDept" aria-label="Department"><option value="all">All departments</option>' + depts().map(x => '<option' + (x === zeroDept ? ' selected' : '') + '>' + esc(x) + '</option>').join("") + '</select>' + (downloads ? '<button class="btn small" data-act="xzero">Export CSV</button>' : '') + '</div></div>' +
+      (zero.length ? '<div class="tbl-wrap" style="max-height:420px;overflow:auto"><table><thead><tr><th>Name</th><th>ID</th><th>Showroom</th><th>Department</th><th>Designation</th><th>Tenure</th><th>Last recognised</th></tr></thead><tbody>' +
+        zero.slice(0, 300).map(r => { const l = lastRecognised(r.key); return '<tr><td><b>' + esc(r.name) + '</b></td><td>' + esc(r.id) + '</td><td>' + esc(r.showroom) + '</td><td>' + esc(r.dept || "") + '</td><td>' + esc(r.designation || "") + '</td><td>' + esc(tenureBand(r.doj)) + '</td><td>' + (l ? fmtT(l) : '<span class="sub">Never</span>') + '</td></tr>'; }).join("") + '</tbody></table></div>' : emptyHtml("🎉", "Everyone here was recognised in this period", "")) + '</section>' +
+    '<section class="panel"><h2>Manager budgets, ' + esc(mLabel(cm)) + '</h2><p class="sub" style="margin:0 0 10px">Managers who have not recognised anyone this month are listed first.</p>' +
+      (mrows.length ? '<div class="tbl-wrap"><table><thead><tr><th>Manager</th><th>Scope</th><th class="num">Budget</th><th class="num">Used</th><th class="num">Burn</th><th class="num">Given this month</th><th class="num">Team coverage, 30 days</th></tr></thead><tbody>' +
+        mrows.map(x => '<tr><td><b>' + esc(x.r.name) + '</b><div class="dept">' + esc(x.r.designation || "") + '</div></td><td>' + esc(x.m.showrooms.indexOf("all") >= 0 ? "All showrooms" : x.m.showrooms.join(", ")) + '</td><td class="num">' + nf(x.m.budget) + '</td><td class="num">' + nf(x.used) + '</td><td class="num">' + x.burn + '%</td><td class="num">' + (x.gave ? x.gave : '<span class="down">0</span>') + '</td><td class="num">' + x.cov + '%</td></tr>').join("") + '</tbody></table></div>' : emptyHtml("👤", "No managers found", "Managers are picked up from designations that include Manager, HOD, Head, Incharge or Supervisor. You can add others in Staff & managers.")) + '</section>' +
+    (downloads ? '<section class="panel"><h2>Reports</h2><p class="sub" style="margin:0 0 10px">CSV files open in Excel.</p><div class="actions"><button class="btn" data-act="xrec">Recognitions (this period)</button><button class="btn" data-act="xred">Redemptions</button><button class="btn" data-act="xbal">Points balances</button></div></section>' : '');
+  return mount(pane, html, p => {
+    p.querySelector("#dShow").onchange = e => { dashShowroom = e.target.value; softRender(); };
+    p.querySelector("#zDept").onchange = e => { zeroDept = e.target.value; softRender(); };
+  });
+}
+
+/* ----- Approvals ----- */
+function approvalsHtml(pane){
+  const pr = recs().filter(r => r.status === "pending").sort((a,b) => a.ts - b.ts), px = redeems().filter(x => x.status === "pending").sort((a,b) => a.ts - b.ts);
+  const done = redeems().filter(x => x.status !== "pending").sort((a,b) => (b.doneAt||b.ts) - (a.doneAt||a.ts)).slice(0, 15);
+  const html = '<section class="panel"><h2>Spot awards waiting for approval</h2>' + (pr.length ? '<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>From</th><th>To</th><th>Value</th><th>Message</th><th class="num">Points each</th><th></th></tr></thead><tbody>' +
+      pr.map(r => '<tr><td>' + fmtT(r.ts) + '</td><td>' + esc(nameOf(r.from)) + '</td><td>' + esc((r.to||[]).map(nameOf).join(", ")) + '</td><td>' + valueOf(r.value).e + ' ' + esc(valueOf(r.value).name) + (r.kind === "boost" ? ' <span class="kindp">Boost</span>' : '') + '</td><td style="white-space:normal;min-width:200px">' + esc(r.msg || "") + '</td><td class="num">' + nf(r.pts) + '</td><td class="num"><div class="actions" style="justify-content:flex-end"><button class="btn small primary" data-act="apprec" data-id="' + esc(r.id) + '">Approve</button><button class="btn small danger" data-act="rejrec" data-id="' + esc(r.id) + '">Decline</button></div></td></tr>').join("") + '</tbody></table></div>'
+      : emptyHtml("✅", "Nothing waiting", "Spot awards above the approval limit appear here.")) + '</section>' +
+    '<section class="panel"><h2>Reward requests</h2>' + (px.length ? '<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Showroom</th><th>Reward</th><th class="num">Points</th><th class="num">Balance after</th><th></th></tr></thead><tbody>' +
+      px.map(x => { const m = master()[x.key] || {}; return '<tr><td>' + fmtT(x.ts) + '</td><td><b>' + esc(nameOf(x.key)) + '</b><div class="dept">' + esc(m.id || "") + '</div></td><td>' + esc(m.showroom || "") + '</td><td>' + esc(x.e || "") + ' ' + esc(x.name) + '</td><td class="num">' + nf(x.pts) + '</td><td class="num">' + nf(walletOf(x.key).bal) + '</td><td class="num"><div class="actions" style="justify-content:flex-end"><button class="btn small primary" data-act="fulfil" data-id="' + esc(x.id) + '">Mark issued</button><button class="btn small danger" data-act="rejred" data-id="' + esc(x.id) + '">Decline</button></div></td></tr>'; }).join("") + '</tbody></table></div>'
+      : emptyHtml("🎁", "No reward requests waiting", "")) + '</section>' +
+    (done.length ? '<section class="panel"><h2>Recently processed</h2><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Reward</th><th class="num">Points</th><th>Status</th></tr></thead><tbody>' + done.map(x => '<tr><td>' + fmtT(x.doneAt || x.ts) + '</td><td>' + esc(nameOf(x.key)) + '</td><td>' + esc(x.name) + '</td><td class="num">' + nf(x.pts) + '</td><td>' + statusPill(x.status) + (x.note ? ' <span class="sub">' + esc(x.note) + '</span>' : '') + '</td></tr>').join("") + '</tbody></table></div></section>' : '');
+  return mount(pane, html);
+}
+
+/* ----- Celebrations: anniversaries and birthdays ----- */
+function celebHtmlAdmin(pane){
+  const m = celMonth || curMonth(), [y, mo] = m.split("-").map(Number), s = settings();
+  const days = new Date(y, mo, 0).getDate(), list = celebrations(new Date(y, mo-1, 1), days);
+  const ann = list.filter(c => c.type === "anniv"), bd = list.filter(c => c.type === "birthday");
+  const hasDob = staffList().some(r => r.dob);
+  const annP = ann.filter(c => !docs["recog/ms-" + c.r.key + "-" + c.date.slice(0,4)]), bdP = bd.filter(c => !docs["recog/bd-" + c.r.key + "-" + c.date.slice(0,4)]);
+  const html = '<div class="toolbar"><div class="field" style="margin:0"><label for="celM">Month</label><input type="month" id="celM" class="inline" value="' + m + '"></div></div>' +
+    '<section class="panel"><div class="feedbar"><div><h2>🎖️ Work anniversaries</h2><p class="sub" style="margin:0">' + ann.length + ' <span>people</span> · ' + annP.length + ' <span>not yet awarded</span></p></div>' +
+      (annP.length ? '<button class="btn primary" data-act="awardms">Award all (' + nf(annP.reduce((a, c) => a + msPoints(c.years), 0)) + ' pts)</button>' : '') + '</div>' +
+      (ann.length ? '<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Name</th><th>Showroom</th><th class="num">Years</th><th class="num">Points</th><th>Status</th></tr></thead><tbody>' +
+        ann.map(c => { const done = docs["recog/ms-" + c.r.key + "-" + c.date.slice(0,4)]; return '<tr><td>' + fmtDate(c.date) + '</td><td><b>' + esc(c.r.name) + '</b></td><td>' + esc(c.r.showroom) + '</td><td class="num">' + c.years + (isMilestone(c.years) ? ' 🌟' : '') + '</td><td class="num">' + nf(msPoints(c.years)) + '</td><td>' + (done ? statusPill("approved") : '<span class="sub">Not yet</span>') + '</td></tr>'; }).join("") + '</tbody></table></div>' : emptyHtml("📅", "No work anniversaries this month", "Anniversaries come from the DOJ column in the staff list.")) + '</section>' +
+    '<section class="panel"><div class="feedbar"><div><h2>🎂 Birthdays</h2><p class="sub" style="margin:0">' + bd.length + ' <span>people</span>' + (s.birthdayPts ? ' · ' + nf(s.birthdayPts) + ' <span>pts each</span>' : '') + '</p></div>' +
+      (bdP.length ? '<button class="btn primary" data-act="awardbd">Send birthday wishes' + (s.birthdayPts ? ' and points' : '') + ' (' + bdP.length + ')</button>' : '') + '</div>' +
+      (!hasDob ? '<div class="banner info">Add a DOB (date of birth) column to the staff upload to celebrate birthdays.</div>' :
+        bd.length ? '<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Name</th><th>Showroom</th><th>Status</th></tr></thead><tbody>' + bd.map(c => '<tr><td>' + fmtDate(c.date) + '</td><td><b>' + esc(c.r.name) + '</b></td><td>' + esc(c.r.showroom) + '</td><td>' + (docs["recog/bd-" + c.r.key + "-" + c.date.slice(0,4)] ? statusPill("approved") : '<span class="sub">Not yet</span>') + '</td></tr>').join("") + '</tbody></table></div>' : emptyHtml("🎈", "No birthdays this month", "")) + '</section>' +
+    '<section class="panel"><h2>Milestone points</h2><p class="sub" style="margin:0 0 10px">Set in Programme settings. Other years earn ' + nf(s.otherYearPts) + ' pts.</p><ul class="ladder">' + Object.keys(s.ms).sort((a,b) => a-b).map(k => '<li><b>' + k + ' ' + (k === "1" ? "year" : "years") + '</b><span>' + nf(s.ms[k]) + ' pts</span></li>').join("") + '</ul></section>';
+  return mount(pane, html, p => { p.querySelector("#celM").onchange = e => { celMonth = e.target.value || null; softRender(); }; });
+}
+async function awardCelebrations(type){
+  const m = celMonth || curMonth(), [y, mo] = m.split("-").map(Number), s = settings();
+  const list = celebrations(new Date(y, mo-1, 1), new Date(y, mo, 0).getDate()).filter(c => c.type === (type === "ms" ? "anniv" : "birthday"));
+  const todo = list.filter(c => !docs["recog/" + type + "-" + c.r.key + "-" + c.date.slice(0,4)]);
+  if (!todo.length) return;
+  const total = todo.reduce((a, c) => a + (type === "ms" ? msPoints(c.years) : (+s.birthdayPts || 0)), 0);
+  if (!await askConfirm("Post " + todo.length + " " + (type === "ms" ? "anniversary" : "birthday") + " celebrations to the wall" + (total ? " and credit " + nf(total) + " points in total" : "") + "?", "Post")) return;
+  for (const c of todo){
+    const id = type + "-" + c.r.key + "-" + c.date.slice(0,4), ts = Math.min(Date.now(), new Date(c.date + "T10:00:00").getTime());
+    const r = type === "ms"
+      ? {id, kind:"milestone", from:"admin", to:[c.r.key], value:"celebrate", years:c.years, pts: msPoints(c.years), ts, status:"approved", msg: "Congratulations on " + c.years + (c.years === 1 ? " year" : " years") + " with GRT! Thank you for your dedication and for everything you bring to " + c.r.showroom + "."}
+      : {id, kind:"birthday", from:"admin", to:[c.r.key], value:"celebrate", pts: +s.birthdayPts || 0, ts, status:"approved", msg: "Wishing you a very happy birthday and a wonderful year ahead!"};
+    writeDoc("recog/" + id, r);
+  }
+  toast("Posted " + todo.length + " celebrations"); confetti(); softRender();
+}
+
+/* ----- Catalogue editor ----- */
+function catalogHtml(pane){
+  if (!catDraft) catDraft = clone(catalog());
+  const html = '<section class="panel"><h2>Rewards catalogue</h2><p class="sub" style="margin:0 0 12px">What employees can redeem their points for. Points are what the item costs; with 1 point = ₹' + settings().rupeePerPt + ', set it to the item\'s rupee value. Switch an item off to hide it without deleting it.</p>' +
+    '<div class="tbl-wrap"><table class="edit-tbl"><thead><tr><th>Icon</th><th>Reward</th><th>Category</th><th>Points</th><th>Shown</th><th></th></tr></thead><tbody>' +
+    catDraft.map((i, n) => '<tr><td><input class="e" data-ci="' + n + '" data-f="e" value="' + esc(i.e) + '" aria-label="Icon"></td><td><input class="n" data-ci="' + n + '" data-f="name" value="' + esc(i.name) + '" aria-label="Reward name"></td><td><input data-ci="' + n + '" data-f="cat" value="' + esc(i.cat) + '" aria-label="Category" style="min-width:130px"></td><td><input class="p" type="number" min="1" data-ci="' + n + '" data-f="pts" value="' + esc(i.pts) + '" aria-label="Points"></td><td><input type="checkbox" data-ci="' + n + '" data-f="on"' + (i.on !== false ? ' checked' : '') + ' aria-label="Shown" style="width:auto"></td><td><button class="xbtn" data-cdel="' + n + '" aria-label="Delete">×</button></td></tr>').join("") +
+    '</tbody></table></div><div class="actions" style="margin-top:12px"><button class="btn" id="catAdd">Add a reward</button><span class="grow"></span><button class="btn" id="catReset">Discard changes</button><button class="btn primary" id="catSave">Save catalogue</button></div></section>';
+  return mount(pane, html, p => {
+    p.querySelectorAll("[data-ci]").forEach(inp => inp.onchange = () => { const i = catDraft[+inp.dataset.ci], f = inp.dataset.f; i[f] = f === "on" ? inp.checked : f === "pts" ? Math.max(1, Math.round(+inp.value || 1)) : inp.value.trim(); });
+    p.querySelectorAll("[data-cdel]").forEach(b => b.onclick = () => { catDraft.splice(+b.dataset.cdel, 1); softRender(); });
+    p.querySelector("#catAdd").onclick = () => { catDraft.push({id: "c" + uid(), e:"🎁", name:"New reward", cat:"Vouchers", pts:500, on:true}); softRender(); };
+    p.querySelector("#catReset").onclick = () => { catDraft = null; softRender(); };
+    p.querySelector("#catSave").onclick = async () => { if (catDraft.some(i => !i.name)) return toast("Every reward needs a name"); try { await writeDocStrict("config/catalog", {list: catDraft, at: Date.now()}); catDraft = null; toast("Catalogue saved"); softRender(); } catch(e){ toast("Not saved: " + errText(e) + ". Only the owner and editors of this page can change the catalogue."); } };
+  });
+}
+
+/* ----- Programme settings ----- */
+function settingsHtml(pane){
+  if (!setDraft) setDraft = {s: settings(), v: clone(allValues())};
+  const s = setDraft.s;
+  const num = (k, l, h) => '<div class="field"><label for="st_' + k + '">' + l + '</label><input type="number" min="0" id="st_' + k + '" data-sk="' + k + '" value="' + esc(s[k]) + '">' + (h ? '<span class="hint" style="margin:2px 0 0">' + h + '</span>' : '') + '</div>';
+  const html = '<section class="panel"><h2>Points rules</h2><div class="set-grid">' +
+      num("peerAllowance", "Points each employee can give per month", "For peer appreciation. 0 turns peer points off.") + num("peerMax", "Most points per person in one appreciation") +
+      num("mgrBudget", "Manager award budget per month", "Default for every manager. Override per manager in Staff & managers.") + num("spotMax", "Most points per person in one spot award") +
+      num("approvalAbove", "HR approval needed above (points per person)") + num("birthdayPts", "Birthday points", "0 posts wishes without points.") +
+      num("otherYearPts", "Anniversary points, non-milestone years") + num("rupeePerPt", "Rupee value of 1 point") + '</div>' +
+      '<h3>Milestone anniversaries</h3><div class="set-grid">' + Object.keys(s.ms).sort((a,b) => a-b).map(k => '<div class="field"><label for="ms_' + k + '">' + k + ' ' + (k === "1" ? "year" : "years") + '</label><input type="number" min="0" id="ms_' + k + '" data-ms="' + k + '" value="' + esc(s.ms[k]) + '"></div>').join("") + '</div></section>' +
+    '<section class="panel"><h2>Values and badges</h2><p class="sub" style="margin:0 0 12px">The values people choose when they recognise someone. Each one becomes a badge on the employee\'s profile.</p><div class="tbl-wrap"><table class="edit-tbl"><thead><tr><th>Code</th><th>Value</th><th>Colour</th><th>Shown</th></tr></thead><tbody>' +
+      setDraft.v.map((v, n) => '<tr><td><input class="e" data-vi="' + n + '" data-f="code" maxlength="3" value="' + esc(valueCode(v)) + '" aria-label="Badge code"></td><td><input class="n" data-vi="' + n + '" data-f="name" value="' + esc(v.name) + '" aria-label="Value name"></td><td><input type="color" data-vi="' + n + '" data-f="c" value="' + esc(v.c) + '" aria-label="Colour" style="width:56px;padding:2px"></td><td><input type="checkbox" data-vi="' + n + '" data-f="on"' + (v.on !== false ? ' checked' : '') + ' style="width:auto" aria-label="Shown"></td></tr>').join("") + '</tbody></table></div>' +
+      '<div class="actions" style="margin-top:12px"><button class="btn" id="valAdd">Add a value</button><span class="grow"></span><button class="btn" id="setReset">Discard changes</button><button class="btn primary" id="setSave">Save settings</button></div></section>' +
+    (docs["config/sample"] ? '<section class="panel"><h2>Sample data</h2><p class="sub" style="margin:0 0 12px">The app came with sample people, wall posts and redemptions so every login has something to show. When you are ready to go live, upload your real staff list in Staff &amp; managers, then remove the sample data here.</p><button class="btn danger" id="rmSample">Remove sample data</button></section>' : '');
+  return mount(pane, html, p => {
+    p.querySelectorAll("[data-sk]").forEach(i => i.onchange = () => { s[i.dataset.sk] = Math.max(0, +i.value || 0); });
+    p.querySelectorAll("[data-ms]").forEach(i => i.onchange = () => { s.ms[i.dataset.ms] = Math.max(0, +i.value || 0); });
+    p.querySelectorAll("[data-vi]").forEach(i => i.onchange = () => { const v = setDraft.v[+i.dataset.vi], f = i.dataset.f; v[f] = f === "on" ? i.checked : i.value.trim(); });
+    const rs = p.querySelector("#rmSample"); if (rs) rs.onclick = removeSample;
+    p.querySelector("#valAdd").onclick = () => { setDraft.v.push({k: "v" + uid(), code:"NV", name:"New value", e:"⭐", c:"#0d5a44", on:true}); softRender(); };
+    p.querySelector("#setReset").onclick = () => { setDraft = null; softRender(); };
+    p.querySelector("#setSave").onclick = async () => {
+      try { await writeDocStrict("config/settings", Object.assign({}, s, {at: Date.now()})); await writeDocStrict("config/values", {list: setDraft.v}); setDraft = null; toast("Settings saved"); softRender(); }
+      catch(e){ toast("Not saved: " + errText(e) + ". Only the owner and editors of this page can change settings."); }
+    };
+  });
+}
+
+/* ----- Staff upload, list and managers ----- */
+const COLS = [
+  {k:"id",   re:/^(emp(loyee)?\s*(id|code|no|number)|staff\s*(id|code|no)|e\s*code|ecode|id|code)$/},
+  {k:"name", re:/^(emp(loyee)?\s*name|staff\s*name|name|full\s*name)$/},
+  {k:"showroom", re:/(showroom|branch|store|outlet|location)/},
+  {k:"dept", re:/^(department|dept)$/},
+  {k:"designation", re:/(designation|role|position|job\s*title)/},
+  {k:"grade", re:/^(grade|band|level)$/},
+  {k:"doj", re:/^(doj|d o j|date\s*of\s*joining|joining\s*date|date\s*joined)$/},
+  {k:"dob", re:/^(dob|d o b|date\s*of\s*birth|birth\s*date|birthday)$/},
+  {k:"gender", re:/^(gender|sex)$/},
+  {k:"mobile", re:/^(mobile|phone|mobile\s*(no|number)|contact)$/}
+];
+function normHeader(h){ return String(h == null ? "" : h).toLowerCase().replace(/[_\.]+/g," ").replace(/\s+/g," ").trim(); }
+function parseDate(v){
+  if (v == null || v === "") return "";
+  if (v instanceof Date && !isNaN(v)) return ymd(v);
+  if (typeof v === "number" && v > 1000 && v < 80000 && typeof XLSX !== "undefined"){ const d = XLSX.SSF.parse_date_code(v); if (d) return d.y + "-" + pad(d.m) + "-" + pad(d.d); }
+  const t = String(v).trim(); let m;
+  if ((m = t.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return m[1] + "-" + pad(m[2]) + "-" + pad(m[3]);
+  if ((m = t.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/))){ let y = +m[3]; if (y < 100) y += y > 40 ? 1900 : 2000; return y + "-" + pad(m[2]) + "-" + pad(m[1]); }
+  const mon = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+  if ((m = t.match(/^(\d{1,2})[-\s\/.]([A-Za-z]{3})[A-Za-z]*[-\s\/.,]*(\d{2,4})$/)) && mon[m[2].toLowerCase()]){ let y = +m[3]; if (y < 100) y += y > 40 ? 1900 : 2000; return y + "-" + pad(mon[m[2].toLowerCase()]) + "-" + pad(m[1]); }
+  return "";
+}
+function parseSheet(aoa){
+  let hRow = -1, map = null;
+  for (let i=0;i<Math.min(15, aoa.length);i++){
+    const m = {}; (aoa[i] || []).forEach((h, j) => { const n = normHeader(h); if (!n) return; const c = COLS.find(c => m[c.k] == null && c.re.test(n)); if (c) m[c.k] = j; });
+    if (m.id != null && m.name != null){ hRow = i; map = m; break; }
+  }
+  if (hRow < 0) return {error:"Couldn't find the header row. The sheet needs columns named Employee ID and Employee Name."};
+  const rows = [], seen = {}, dupes = [];
+  for (let i=hRow+1;i<aoa.length;i++){
+    const r = aoa[i] || [], id = String(r[map.id] == null ? "" : r[map.id]).trim(), name = String(r[map.name] == null ? "" : r[map.name]).trim();
+    if (!id) continue; const k = keyOf(id); if (seen[k]){ dupes.push(id); continue; } seen[k] = 1;
+    const o = {id, name: name || id};
+    ["showroom","dept","designation","grade","mobile"].forEach(c => { if (map[c] != null){ const v = String(r[map[c]] == null ? "" : r[map[c]]).trim(); if (v) o[c] = v.slice(0, 80); } });
+    ["doj","dob"].forEach(c => { if (map[c] != null){ const d = parseDate(r[map[c]]); if (d) o[c] = d; } });
+    if (map.gender != null){ const g = String(r[map.gender] || "").trim().toLowerCase(); o.gender = g === "m" || g === "male" ? "Male" : g === "f" || g === "female" ? "Female" : (g ? String(r[map.gender]).trim() : undefined); if (!o.gender) delete o.gender; }
+    rows.push(o);
+  }
+  return {rows, map, dupes};
+}
+async function saveStaff(rows){
+  const per = 1500, parts = Math.max(1, Math.ceil(rows.length / per)), old = (docs["staff/p0"] || {}).parts || 0;
+  for (let i=0;i<parts;i++){
+    const data = rows.slice(i*per, (i+1)*per).map(r => SCOLS.map(c => r[c] == null ? "" : r[c]));
+    await writeDocStrict("staff/p" + i, i === 0 ? {cols:SCOLS, parts, n: rows.length, at: Date.now(), data} : {data});
+  }
+  for (let i=parts;i<old;i++) await deleteDoc("staff/p" + i);
+}
+function staffHtml(pane){
+  const all = staffList(), q = staffQ.trim().toLowerCase();
+  const hits = q ? all.filter(r => (r.name + " " + r.id + " " + r.showroom + " " + (r.designation || "")).toLowerCase().indexOf(q) >= 0) : all;
+  const cfg = mgrCfg();
+  const html = '<section class="panel"><h2>Upload staff list</h2><p>Upload an Excel or CSV file with one row per employee. Employee ID and Employee Name are required. Showroom (or Branch / Location), Department, Designation, Grade, DOJ, DOB, Gender and Mobile are used when present. DOJ drives work anniversaries and DOB drives birthdays. Uploading replaces the current list; recognition and points history are kept.</p>' +
+      '<label class="drop" id="drop" for="upFile"><b>Choose an Excel file</b><span class="sub">or drop it here (.xlsx, .xls or .csv)</span></label><input type="file" id="upFile" accept=".xlsx,.xls,.csv" hidden><div id="upPrev">' + (pendingUpload ? uploadPreview() : '') + '</div></section>' +
+    (all.length ? '<section class="panel"><div class="feedbar"><div><h2>Staff</h2><p class="sub" style="margin:0">' + nf(all.length) + ' <span>people</span>' + (docs["staff/p0"] && docs["staff/p0"].at ? ' · <span>uploaded</span> ' + fmtT(docs["staff/p0"].at) : '') + '</p></div><input type="search" id="stQ" class="inline" placeholder="Search name, ID or showroom" value="' + esc(staffQ) + '" style="max-width:280px"></div>' +
+      '<div class="tbl-wrap" style="max-height:460px;overflow:auto"><table><thead><tr><th>Name</th><th>ID</th><th>Showroom</th><th>Designation</th><th>Manager</th><th class="num">Balance</th><th></th></tr></thead><tbody>' +
+      hits.slice(0, 150).map(r => { const m = mgrOf(r.key); return '<tr><td><b>' + esc(r.name) + '</b></td><td>' + esc(r.id) + '</td><td>' + esc(r.showroom) + '</td><td>' + esc(r.designation || "") + '</td><td>' + (m ? '<span class="tag">' + (m.showrooms.indexOf("all") >= 0 ? "All showrooms" : "Own showroom") + '</span>' : '') + '</td><td class="num">' + nf(walletOf(r.key).bal) + '</td><td class="num"><button class="btn small" data-act="resetpw" data-k="' + esc(r.key) + '">Reset password</button></td></tr>'; }).join("") +
+      '</tbody></table></div>' + (hits.length > 150 ? '<p class="hint" style="margin:8px 0 0">Showing 150 of ' + nf(hits.length) + '. Search to narrow down.</p>' : '') + '</section>' +
+    '<section class="panel"><h2>Managers</h2><p class="sub" style="margin:0 0 10px">Anyone whose designation includes Manager, HOD, Head, Incharge or Supervisor is a manager automatically, for their own showroom. Regional, zonal, area and general managers, HODs and heads cover all showrooms. Add people here to give manager access, change their showrooms or budget, or switch it off.</p>' +
+      (cfg.length ? '<div class="tbl-wrap"><table class="edit-tbl"><thead><tr><th>Employee</th><th>Showrooms</th><th>Monthly budget</th><th>Access</th><th></th></tr></thead><tbody>' +
+        cfg.map((c, n) => '<tr><td><b>' + esc(nameOf(keyOf(c.id))) + '</b><div class="dept">' + esc(c.id) + '</div></td><td><input data-mi="' + n + '" data-f="showrooms" value="' + esc((c.showrooms || []).join(", ")) + '" placeholder="Own showroom, or type all" style="min-width:200px"></td><td><input class="p" type="number" min="0" data-mi="' + n + '" data-f="budget" value="' + esc(c.budget == null ? "" : c.budget) + '" placeholder="' + settings().mgrBudget + '"></td><td><select data-mi="' + n + '" data-f="off"><option value="">Manager</option><option value="1"' + (c.off ? ' selected' : '') + '>No manager access</option></select></td><td><button class="xbtn" data-mdel="' + n + '" aria-label="Remove">×</button></td></tr>').join("") + '</tbody></table></div>' : '') +
+      '<div class="actions" style="margin-top:12px"><input id="mgrAddId" class="inline" placeholder="Employee ID" style="max-width:180px"><button class="btn" id="mgrAdd">Add</button></div><p class="hint" style="margin:8px 0 0">Showrooms: separate several with commas, or type <b>all</b>. Changes save as you go.</p></section>' : '');
+  return mount(pane, html, p => {
+    const fileIn = p.querySelector("#upFile"), drop = p.querySelector("#drop");
+    fileIn.onchange = () => { if (fileIn.files[0]) readUpload(fileIn.files[0]); };
+    ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) readUpload(f); });
+    bindUploadPreview(p);
+    const sq = p.querySelector("#stQ"); if (sq) sq.oninput = () => { staffQ = sq.value; clearTimeout(sq._t); sq._t = setTimeout(() => { const pos = sq.selectionStart; render(); const n = $("#stQ"); if (n){ n.focus(); try { n.setSelectionRange(pos, pos); } catch(e){} } }, 250); };
+    const saveCfg = async list => { try { await writeDocStrict("config/managers", {list}); softRender(); } catch(e){ toast("Not saved: " + errText(e) + ". Only the owner and editors of this page can change managers."); } };
+    p.querySelectorAll("[data-mi]").forEach(i => i.onchange = () => { const list = clone(cfg), c = list[+i.dataset.mi], f = i.dataset.f;
+      if (f === "showrooms") c.showrooms = i.value.split(",").map(x => x.trim()).filter(Boolean).map(x => x.toLowerCase() === "all" ? "all" : (showrooms().find(s => s.toLowerCase() === x.toLowerCase()) || x));
+      else if (f === "budget") c.budget = i.value === "" ? null : Math.max(0, +i.value || 0); else c.off = i.value === "1";
+      saveCfg(list); });
+    p.querySelectorAll("[data-mdel]").forEach(b => b.onclick = () => { const list = clone(cfg); list.splice(+b.dataset.mdel, 1); saveCfg(list); });
+    const ma = p.querySelector("#mgrAdd"); if (ma) ma.onclick = () => { const id = p.querySelector("#mgrAddId").value.trim(), k = keyOf(id); if (!master()[k]) return toast("No one with that employee ID is in the staff list"); if (cfg.some(c => keyOf(c.id) === k)) return toast("Already in the list"); saveCfg(cfg.concat([{id: master()[k].id, showrooms:[master()[k].showroom], budget:null}])); };
+  });
+}
+function readUpload(file){
+  if (typeof XLSX === "undefined"){ toast("The Excel reader didn't load. Check your connection and reload the page."); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(new Uint8Array(e.target.result), {type:"array", cellDates:false});
+      const aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:"", raw:true});
+      const res = parseSheet(aoa);
+      if (res.error){ pendingUpload = null; $("#upPrev").innerHTML = '<div class="banner" style="margin-top:14px">' + esc(res.error) + '</div>'; return; }
+      pendingUpload = Object.assign(res, {file: file.name}); $("#upPrev").innerHTML = uploadPreview(); bindUploadPreview($("#pane"));
+    } catch(ex){ $("#upPrev").innerHTML = '<div class="banner" style="margin-top:14px">Couldn\'t read that file. Save it as .xlsx and try again.</div>'; }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function uploadPreview(){
+  const u = pendingUpload, found = COLS.filter(c => u.map[c.k] != null).map(c => c.k);
+  return '<div style="margin-top:14px"><p><b>' + esc(u.file) + '</b>: ' + nf(u.rows.length) + ' <span>people</span>, ' + new Set(u.rows.map(r => r.showroom || "Unassigned")).size + ' <span>showrooms</span>, ' + u.rows.filter(r => autoMgr(r)).length + ' <span>managers by designation</span>.</p>' +
+    '<div class="colmap">' + COLS.map(c => '<span class="' + (found.indexOf(c.k) >= 0 ? "ok" : "") + '">' + (found.indexOf(c.k) >= 0 ? "✓ " : "") + c.k.toUpperCase() + '</span>').join("") + '</div>' +
+    (u.dupes.length ? '<p class="hint">Skipped ' + u.dupes.length + ' repeated IDs.</p>' : '') +
+    '<div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Showroom</th><th>Designation</th><th>DOJ</th><th>DOB</th></tr></thead><tbody>' + u.rows.slice(0, 5).map(r => '<tr><td>' + esc(r.id) + '</td><td>' + esc(r.name) + '</td><td>' + esc(r.showroom || "") + '</td><td>' + esc(r.designation || "") + '</td><td>' + esc(r.doj || "") + '</td><td>' + esc(r.dob || "") + '</td></tr>').join("") + '</tbody></table></div>' +
+    '<div class="actions" style="margin-top:12px"><button class="btn" id="upCancel">Cancel</button><button class="btn primary" id="upGo">Replace staff list with these ' + nf(u.rows.length) + '</button></div></div>';
+}
+function bindUploadPreview(p){
+  const c = p.querySelector("#upCancel"), g = p.querySelector("#upGo");
+  if (c) c.onclick = () => { pendingUpload = null; softRender(); };
+  if (g) g.onclick = async () => { g.disabled = true; g.textContent = "Saving…"; try { await saveStaff(pendingUpload.rows); pendingUpload = null; toast("Staff list saved"); softRender(); } catch(e){ g.disabled = false; toast("Not saved: " + errText(e) + ". Only the owner and editors of this page can upload staff."); } };
+}
+
+/* ----- CSV exports ----- */
+function csv(rows){ return "﻿" + rows.map(r => r.map(v => { const s = String(v == null ? "" : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\r\n"); }
+async function saveCsv(name, rows){ if (!downloads) return; try { await downloads.save({filename: name + "-" + today() + ".csv", data: csv(rows)}); } catch(e){ if (e && e.code !== "declined") toast("Couldn't save the file here."); } }
+
+/* ----- Admin actions ----- */
+async function adminAct(a, b){
+  if (!isAdminActor()) return;
+  const id = b.dataset.id;
+  if (a === "dperiod"){ dashPeriod = b.dataset.v; return softRender(); }
+  if (a === "apprec" || a === "rejrec"){ const r = docs["recog/" + id]; if (!r) return; await writeDoc("recog/" + id, Object.assign({}, r, {status: a === "apprec" ? "approved" : "rejected", approvedAt: Date.now()})); toast(a === "apprec" ? "Approved and posted to the wall" : "Declined"); return softRender(); }
+  if (a === "fulfil" || a === "rejred"){
+    const x = docs["redeem/" + id]; if (!x) return;
+    const note = await askInput(a === "fulfil" ? "Mark as issued" : "Decline request", a === "fulfil" ? "Note for the employee (optional), e.g. voucher code sent by SMS" : "Reason (optional). The points go back to the employee.", "text");
+    if (note === null) return;
+    await writeDoc("redeem/" + id, Object.assign({}, x, {status: a === "fulfil" ? "fulfilled" : "rejected", note: note.trim().slice(0, 140), doneAt: Date.now()}));
+    toast(a === "fulfil" ? "Marked as issued" : "Declined and points returned"); return softRender();
+  }
+  if (a === "awardms") return awardCelebrations("ms");
+  if (a === "awardbd") return awardCelebrations("bd");
+  if (a === "resetpw"){ const k = b.dataset.k; if (!await askConfirm("Reset the password for " + nameOf(k) + "? Their temporary password becomes the last 4 digits of their employee ID, and they choose a new one when they sign in.", "Reset")) return; await deleteDoc("pins/" + k); toast("Password reset"); return; }
+  if (a === "xzero"){ const d = dashData(); return saveCsv("not-recognised", [["Employee ID","Name","Showroom","Department","Designation","Tenure","Last recognised"]].concat(d.staff.filter(r => !d.rcv.has(r.key) && (zeroDept === "all" || (r.dept || "Unassigned") === zeroDept)).map(r => { const l = lastRecognised(r.key); return [r.id, r.name, r.showroom, r.dept || "", r.designation || "", tenureBand(r.doj), l ? ymd(new Date(l)) : "Never"]; }))); }
+  if (a === "xrec"){ const [from, to] = periodRange(dashPeriod); return saveCsv("recognitions", [["Date","Type","From","To (ID)","To (name)","Showroom","Value","Points each","Status","Message"]].concat(recs().filter(r => r.ts >= from && r.ts <= to).sort((x,y) => x.ts - y.ts).flatMap(r => (r.to||[]).map(t => [ymd(new Date(r.ts)), KIND[r.kind], nameOf(r.from), (master()[t]||{}).id || t, nameOf(t), (master()[t]||{}).showroom || "", valueOf(r.value).name, r.pts || 0, r.status || "approved", r.msg || ""])))); }
+  if (a === "xred") return saveCsv("redemptions", [["Date","Employee ID","Name","Showroom","Reward","Points","Status","Note"]].concat(redeems().sort((x,y) => x.ts - y.ts).map(x => [ymd(new Date(x.ts)), (master()[x.key]||{}).id || x.key, nameOf(x.key), (master()[x.key]||{}).showroom || "", x.name, x.pts, x.status, x.note || ""])));
+  if (a === "xbal") return saveCsv("points-balances", [["Employee ID","Name","Showroom","Earned","Redeemed","Balance"]].concat(staffList().map(r => { const w = walletOf(r.key); return [r.id, r.name, r.showroom, w.earned, w.spent, w.bal]; })));
+}
+
+async function removeSample(){
+  const paths = Object.keys(docs).filter(k => docs[k] && docs[k].sample === true);
+  if (!await askConfirm("Remove " + paths.length + " sample items (sample staff, wall posts, reactions, comments, redemptions and trial passwords)? Your own settings and catalogue stay. This can't be undone.", "Remove")) return;
+  try { for (const p of paths) await deleteDoc(p); await deleteDoc("config/sample"); toast("Sample data removed"); softRender(); }
+  catch(e){ toast("Not removed: " + errText(e)); }
+}
+
+/* =========================================================
+   Demo data (stored only in this browser)
+   ========================================================= */
+function rng(seed){ return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+async function buildDemo(){
+  const R = rng(20261006), pick = a => a[Math.floor(R() * a.length)];
+  const SRS = ["T NAGAR","VELACHERY","ANNA NAGAR","COIMBATORE","MADURAI","BENGALURU JAYANAGAR"];
+  const FN = ["Priya","Karthik","Lakshmi","Arun","Divya","Suresh","Meena","Vignesh","Anitha","Ramesh","Kavya","Senthil","Deepa","Manoj","Revathi","Prakash","Sangeetha","Bala","Nandhini","Gokul","Harini","Rajesh","Swathi","Murali","Janani","Ashok","Pooja","Dinesh","Sowmya","Vijay"];
+  const LN = ["Raman","Krishnan","Subramanian","Natarajan","Iyer","Reddy","Gowda","Pillai","Shankar","Venkatesh","Murthy","Rao","Kumar","Selvam","Rajan"];
+  const DES = [["Sales Executive","Sales"],["Sales Executive","Sales"],["Senior Sales Executive","Sales"],["Sales Executive","Sales"],["Cashier","Accounts"],["Customer Relations Executive","Customer Service"],["Gold Smith","Operations"],["Stock Assistant","Operations"],["Sales Executive","Sales"]];
+  const now = new Date(), Y = now.getFullYear(), M = now.getMonth(), D = now.getDate();
+  const rows = [];
+  for (let i=1;i<=60;i++){
+    const id = "D" + (1000 + i), sr = (i === 60 ? "T NAGAR" : SRS[Math.floor((i-1) / 10) % SRS.length]) + " (Sample)";
+    const isMgr = i % 10 === 1, d = i === 60 ? ["Regional Manager","Operations"] : isMgr ? ["Showroom Manager","Operations"] : DES[i % DES.length];
+    const yj = 2008 + Math.floor(R() * 17), doj = (i % 9 === 0 ? (Y - 1 - (i % 11)) : yj) + "-" + pad(i % 9 === 0 ? M + 1 : 1 + Math.floor(R()*12)) + "-" + pad(1 + Math.floor(R()*27));
+    let dob = (1975 + Math.floor(R()*25)) + "-" + pad(1 + Math.floor(R()*12)) + "-" + pad(1 + Math.floor(R()*27));
+    if (i % 13 === 2){ const b = new Date(Y, M, D + (i % 6)); dob = (1980 + i % 15) + "-" + pad(b.getMonth()+1) + "-" + pad(b.getDate()); }
+    rows.push({id, name: FN[(i*7) % FN.length] + " " + LN[(i*4 + Math.floor(i/30)) % LN.length], showroom: sr, dept: d[1], designation: d[0], grade: isMgr || i === 60 ? "M" + (i === 60 ? 3 : 1) : "S" + (1 + i % 3), doj, dob, gender: i % 3 === 0 ? "Male" : "Female"});
+  }
+  const out = {};
+  out["staff/sample"] = {cols:SCOLS, n:rows.length, at:Date.now(), data: rows.map(r => SCOLS.map(c => r[c] == null ? "" : r[c]))};
+  out[ADM_PATH] = Object.assign({id:ADMIN_ID}, await makeCred(ADM_KEY, "Admin@2026", "admin"));
+  out["config/sample"] = {at: Date.now(), note:"Sample data for trying GReaT Rewards. Remove it from Admin > Settings."};
+  const keys = rows.map(r => keyOf(r.id)), bySr = {}; rows.forEach(r => { (bySr[r.showroom] = bySr[r.showroom] || []).push(keyOf(r.id)); });
+  const quiet = new Set(keys.filter((k, i) => i % 7 === 3));      // people nobody has recognised lately
+  const vals = DEFAULT_VALUES.filter(v => v.k !== "celebrate").map(v => v.k), nowT = Date.now();
+  let n = 0;
+  for (let i=0;i<170;i++){
+    const age = Math.pow(R(), 1.9) * 160 * DAY, ts = nowT - age - Math.floor(R()*3600e3);
+    const mgrIdx = Math.floor(R()*6) * 10, mgrKey = keys[mgrIdx];
+    const spot = R() < .28, from = spot ? (R() < .15 ? keys[59] : mgrKey) : pick(keys);
+    const pool = spot ? (from === keys[59] ? keys : bySr[rows[mgrIdx].showroom]) : bySr[(rows[keys.indexOf(from)]).showroom].concat(R() < .3 ? [pick(keys)] : []);
+    let cands = pool.filter(k => k !== from && !(quiet.has(k) && age < 35*DAY));
+    if (!cands.length) continue;
+    const to = [pick(cands)]; if (R() < .12){ const t2 = pick(cands); if (to.indexOf(t2) < 0) to.push(t2); }
+    const v = pick(vals), msg = pick(TEMPLATES[v]);
+    const pts = spot ? pick([100,100,250,250,500]) : pick([0,5,10,10,20]);
+    const id = "demo" + (n++);
+    out["recog/" + id] = {id, kind: spot ? "spot" : "peer", from, to, value: v, msg, pts, ts, status:"approved"};
+    if (R() < .5 || age < 3*DAY){ const rc = 1 + Math.floor(R()*4); for (let j=0;j<rc;j++){ const k = pick(keys); out["react/" + id + "~" + k] = {r:id, k, e: pick(REACTS), ts}; } }
+    if (R() < .18){ const c = {id: "dc" + n, r:id, k: pick(keys), text: pick(["Well deserved!","Congratulations, so happy for you.","The customers noticed too. Great job.","Thank you for this, team!","Superb work. Proud to work with you.","This is exactly what GRT is about."]), ts: ts + 3600e3}; out["cmt/" + c.id] = c; }
+  }
+  // make sure everyone has received something at some point, so every login has history
+  const got = new Set(); Object.keys(out).forEach(p => { if (p.indexOf("recog/") === 0) (out[p].to || []).forEach(t => got.add(t)); });
+  keys.forEach((k, i) => { if (got.has(k)) return; const from = pick(bySr[rows[i].showroom].filter(x => x !== k)) || keys[0], v = pick(vals), id = "demo" + (n++);
+    out["recog/" + id] = {id, kind:"peer", from, to:[k], value:v, msg: pick(TEMPLATES[v]), pts: 10, ts: nowT - (40 + Math.floor(R()*100)) * DAY, status:"approved"}; });
+  // two spot awards waiting for HR approval
+  [[0, 12, 750], [59, 33, 1000]].forEach(([a, b, p], j) => { const id = "demopend" + j; out["recog/" + id] = {id, kind:"spot", from: keys[a], to:[keys[b]], value: j ? "customer" : "extra", msg: j ? "Closed the biggest bridal order of the quarter and handled the family with great care." : "Ran the counter alone through the festival rush and still kept every customer smiling.", pts:p, ts: nowT - (j + 1) * 5 * 3600e3, status:"pending"}; });
+  // past work anniversaries (earlier months)
+  rows.forEach(r => {
+    const md = r.doj.slice(5), y = Y - +r.doj.slice(0,4), d = new Date(Y, +md.slice(0,2) - 1, +md.slice(3));
+    if (y >= 1 && d.getTime() < new Date(Y, M, 1).getTime() && nowT - d.getTime() < 170*DAY){ const id = "ms-" + keyOf(r.id) + "-" + Y; out["recog/" + id] = {id, kind:"milestone", from:"admin", to:[keyOf(r.id)], value:"celebrate", years:y, pts: DEFAULT_SETTINGS.ms[String(y)] != null ? DEFAULT_SETTINGS.ms[String(y)] : DEFAULT_SETTINGS.otherYearPts, ts: d.getTime() + 10*3600e3, status:"approved", msg:"Congratulations on " + y + " years with GRT! Thank you for your dedication."}; }
+  });
+  // redemptions
+  [[3,"c4",300,"fulfilled"],[5,"c6",600,"fulfilled"],[14,"c3",500,"fulfilled"],[22,"c10",250,"pending"],[8,"c4",300,"pending"],[41,"c6",600,"pending"]].forEach(([i, it, p, st], j) => {
+    const c = DEFAULT_CATALOG.find(x => x.id === it), id = "dr" + j; out["redeem/" + id] = {id, key: keys[i], item: it, name: c.name, e: c.e, pts: p, ts: nowT - (j + 1) * 6 * DAY, status: st, doneAt: st === "fulfilled" ? nowT - j * 5 * DAY : undefined, note: st === "fulfilled" ? "Voucher code sent by SMS" : ""};
+  });
+  Object.keys(out).forEach(p => { if (p !== "config/sample" && p !== ADM_PATH) out[p].sample = true; });
+  return JSON.parse(JSON.stringify(out));
+}
+function enterDemo(){ lsSet("sr-demo", "1"); signOutAll(); sessSet("sr-view", null); location.reload(); }
+function exitDemo(){ lsSet("sr-demo", null); signOutAll(); sessSet("sr-view", null); location.reload(); }
+async function resetDemo(){ if (!await askConfirm("Reset the demo to fresh sample data? Anything you changed in the demo will be lost.")) return; docs = await buildDemo(); VER++; saveLocal(); signOutAll(); go("login"); toast("Demo data reset"); }
+function demoBar(){
+  let el = document.getElementById("demoBar");
+  if (mode !== "demo"){ if (el) el.remove(); return; }
+  if (!el){ el = document.createElement("div"); el.id = "demoBar"; el.className = "demobar"; document.body.appendChild(el);
+    el.innerHTML = '<span>🎬 <span class="dtxt-long">Demo mode: sample data only</span><span class="dtxt-short">Demo</span></span><button type="button" id="demoReset">Reset</button><button type="button" id="demoExit">Exit demo</button>';
+    el.querySelector("#demoExit").onclick = exitDemo; el.querySelector("#demoReset").onclick = resetDemo; }
+}
+
+/* =========================================================
+   Start-up
+   ========================================================= */
+const COLLS = ["config","staff","pins","recog","react","cmt","redeem"];
+const loaded = {};
+let firstReady = true, readyTimer = null;
+function ready(){
+  if (!COLLS.every(c => loaded[c])) return;
+  if (firstReady){ firstReady = false; render(); return; }
+  clearTimeout(readyTimer); readyTimer = setTimeout(() => { if (cmOpen && $("#dlgCm").open && !(document.activeElement && document.activeElement.id === "cmText")) openComments(cmOpen); softRender(); }, 120);
+}
+async function init(){
+  render();
+  const use = n => (window.claude && window.claude.use) ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
+  use("downloads").then(d => { downloads = d; if (d && mode !== "loading") softRender(); });
+  use("sample").then(s => { sampleFn = s; });
+  if (DEMO_ON){
+    mode = "demo"; isOwnerEditor = true;
+    try { const raw = localStorage.getItem(DEMO_KEY); docs = raw ? (JSON.parse(raw) || {}) : {}; } catch(e){ docs = {}; }
+    if (!docs["config/demo"]){ docs = await buildDemo(); saveLocal(); }
+    VER++; render(); return;
+  }
+  db = await use("db");
+  if (db){
+    mode = "shared";
+    use("user").then(async u => { try { isOwnerEditor = u ? ((await u.isOwner()) || (await u.canEdit())) : false; } catch(e){ isOwnerEditor = false; } if (view === "login" && !firstReady) renderLogin(); });
+    const onErr = e => toast("Sync problem: " + errText(e));
+    COLLS.forEach(col => db.collection(col).onSnapshot(qs => {
+      Object.keys(docs).filter(k => k.indexOf(col + "/") === 0).forEach(k => delete docs[k]);
+      qs.docs.forEach(d => { if (d.exists) docs[col + "/" + d.id] = clone(d.data()); });
+      VER++; loaded[col] = true; ready();
+    }, onErr));
+  } else {
+    mode = "local"; isOwnerEditor = true;
+    try { const raw = localStorage.getItem(LOCAL_KEY); if (raw) docs = JSON.parse(raw) || {}; } catch(e){ docs = {}; }
+    if (!Object.keys(docs).length){ docs = await buildDemo(); saveLocal(); }
+    VER++; render();
+  }
+}
+init();
+})();
+</script>
+
+</body></html>
